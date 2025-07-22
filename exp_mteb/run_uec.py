@@ -118,7 +118,6 @@ def calculate_item_specific_coeffs_logits(
     item_identifier: str,  # For logging, e.g., "Document hash_123"
     item_vars_dict: dict,  # {model_idx: var_tensor for this item, CPU tensors}
     ordered_model_indices: list[int],
-    processing_options: dict,  # The global UEC_OPTIONS dictionary
     debugging: bool = False
 ) -> torch.Tensor:
     """
@@ -127,7 +126,6 @@ def calculate_item_specific_coeffs_logits(
     """
     if debugging:
         logger.debug(f"\n--- Debug Coeff Calc for: {item_identifier} ---")
-        logger.debug(f"OPTIONS: {processing_options}")
         logger.debug(f"Input item_vars_dict (original) keys: {list(item_vars_dict.keys()) if item_vars_dict else 'None'}")
 
     # Initial check for necessary inputs
@@ -170,20 +168,11 @@ def calculate_item_specific_coeffs_logits(
 
     item_model_raw_scores = {}
     for i, model_idx_present in enumerate(valid_models_for_processing):
-        if processing_options["agg_vars"] == "log_det":
-            model_raw_score = - processing_options["alpha"] * torch.log(working_vars_stacked[i] + 1e-30).sum().item()
-        elif processing_options["agg_vars"] == "trace":
-            inv_dim_vars = 1.0 / (working_vars_stacked[i] + 1e-30)
-            model_raw_score = torch.sum(inv_dim_vars).item()
-        elif processing_options["agg_vars"] == "norm":
-            inv_dim_vars = 1.0 / (working_vars_stacked[i] + 1e-30)
-            model_raw_score = torch.sqrt(torch.norm(inv_dim_vars, p=2)).item()
-        else:
-            raise ValueError(f"Invalid agg_vars option: {processing_options['agg_vars']}")
-        
+        inv_dim_vars = 1.0 / (working_vars_stacked[i] + 1e-30)
+        model_raw_score = torch.sum(inv_dim_vars).item()
         item_model_raw_scores[model_idx_present] = model_raw_score
         if debugging: 
-            logger.debug(f"[{item_identifier}] Model {model_idx_present}: Final var for score (sum): {working_vars_stacked[i].sum().item():.4e}, Raw score ({processing_options['agg_vars']}): {model_raw_score:.4e}")
+            logger.debug(f"[{item_identifier}] Model {model_idx_present}: Final var for score (sum): {working_vars_stacked[i].sum().item():.4e}")
     
     raw_scores_list_ordered = []
     for model_idx_ordered in ordered_model_indices:
@@ -206,18 +195,12 @@ def ensemble_prob_embs_uec_doc_specific(
     variance_maps: list[TextVectorMap],
     save_path_means: str | Path,
     save_path_variances: str | Path,
-    uec_options: dict = None,
+    temperature: float = 1.0,
 ) -> None:
     """
     Ensembles multiple mean and variance TextVectorMap objects using UEC with document-specific weights.
     Updated to use the improved coefficient calculation method from miracls/run_uec.py.
     """
-    if uec_options is None:
-        uec_options = {
-            "agg_vars": "log_det",  # "trace", "norm", "log_det"
-            "alpha": 0.5,
-            "temperature": 1.0,
-        }
 
     if len(mean_maps) != len(variance_maps):
         raise ValueError("Mismatch in the number of mean maps and variance maps for ensembling.")
@@ -301,13 +284,13 @@ def ensemble_prob_embs_uec_doc_specific(
             item_identifier=f"Doc {text_hash}",
             item_vars_dict=current_doc_vars_dict,
             ordered_model_indices=ordered_model_indices,
-            processing_options=uec_options,
+
             debugging=DEBUG_THIS_ITEM
         )
         
         # Apply temperature scaling and softmax to get final weights
-        if uec_options["temperature"] != 1.0:
-            doc_coeffs_logits = doc_coeffs_logits / uec_options["temperature"]
+        if temperature != 1.0:
+            doc_coeffs_logits = doc_coeffs_logits / temperature
         
         doc_weights_tensor = torch.softmax(doc_coeffs_logits, dim=0)
         doc_weights = doc_weights_tensor.cpu().tolist()
@@ -547,19 +530,6 @@ def main():
     
     # UEC Configuration Arguments
     parser.add_argument(
-        "--agg_vars",
-        type=str,
-        default="log_det",
-        choices=["log_det", "trace", "norm"],
-        help="Aggregation method for variance-based coefficient calculation: 'log_det', 'trace', or 'norm'."
-    )
-    parser.add_argument(
-        "--alpha",
-        type=float,
-        default=0.005,
-        help="Alpha parameter for log_det aggregation method (ignored for other methods)."
-    )
-    parser.add_argument(
         "--temperature",
         type=float,
         default=10.0,
@@ -596,13 +566,6 @@ def main():
 
     args = parser.parse_args()
 
-    # Create UEC options dictionary
-    uec_options = {
-        "agg_vars": args.agg_vars,
-        "alpha": args.alpha,
-        "temperature": args.temperature,
-    }
-
     # Select tasks based on task_type
     if args.task_type == "retrieval":
         task_list = RETRIEVAL_TASKS
@@ -622,7 +585,7 @@ def main():
     for task_name in task_list:
         logger.info(f"\n===== Starting UEC (document-specific weights) ensembling process for task: {task_name} =====")
         logger.info(f"Models to ensemble from: {args.model_cache_roots}")
-        logger.info(f"UEC configuration: {uec_options}")
+        logger.info(f"UEC configuration: temperature={args.temperature}")
 
         model_names_for_ensemble = [Path(p).name for p in [
             f"{args.model_cache_roots}/intfloat_e5-base-v2",
@@ -655,7 +618,7 @@ def main():
             variance_maps,
             save_path_means,
             save_path_variances,
-            uec_options=uec_options,
+            temperature=args.temperature,
         )
 
         # === MTEB Evaluation Part ===
@@ -675,7 +638,7 @@ def main():
         similarity_fct_with_params = functools.partial(
             mteb_uncertainty_similarity_fct,
             device=args.device,
-            alpha=1.0  # Example alpha value
+            beta=args.beta,
         )
 
         evaluation = mteb.MTEB(

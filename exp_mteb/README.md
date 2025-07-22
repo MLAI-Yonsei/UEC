@@ -166,8 +166,7 @@ python exp_mteb/run_uec.py \
     --save_root "/path/to/your/bem/uec_ensembled_cache" \
     --output_root "/path/to/your/bem/uec_mteb_results" \
     --beta 0.1 \
-    --temperature 2.0 \
-    --alpha 0.005
+    --temperature 2.0
 ```
 
 **Key Arguments:**
@@ -176,5 +175,5 @@ python exp_mteb/run_uec.py \
 *   `--task_type`: The category of MTEB tasks to run (`retrieval`, `classification`, `sts`, or `all`).
 *   `--save_root`: The root directory where the final ensembled UEC embeddings will be saved.
 *   `--output_root`: The root directory for the MTEB evaluation results of the UEC model.
-*   `--agg_vars`, `--alpha`, `--temperature`: Hyperparameters that control the UEC weighting logic.
-*   `--beta`: A hyperparameter for the uncertainty-aware similarity function.
+*   `--temperature`: Temperature scaling for softmax in coefficient calculation.
+*   `--beta`: A hyperparameter for the uncertainty-aware similarity function's variance penalty.
