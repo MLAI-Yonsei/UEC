@@ -1,6 +1,6 @@
 # Uncertainty-driven Embedding Convolution
 
-This repository contains PyTorch implemenations of "Uncertainty-driven Embedding Convolution" [paper](.).
+This repository contains PyTorch implemenations of "Uncertainty-driven Embedding Convolution" <!--[paper](.)-->.
 
 ## Introduction
 Uncertainty-driven Embedding Convolution (UEC) is a framework for combining embeddings in principled, uncertainty-aware manner. UEC consists of three key components.
