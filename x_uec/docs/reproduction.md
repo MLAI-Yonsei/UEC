@@ -4,7 +4,7 @@
 
 ## 1. 새 clone에서 바로 실행할 수 있는 것
 
-`x_uec/`의 `caia.py`, `covariance_ops.py`, 두 예제와 기본 테스트는 NumPy만 사용합니다. README의 합성 예제를 실행하면 데이터 다운로드 없이 정렬 호출, raw 모멘트 계산, 작은 dense 기준 및 문서 chunk 처리를 확인할 수 있습니다.
+`x_uec/`의 `caia.py`, `covariance_ops.py`, 두 예제와 기본 테스트는 NumPy만 사용합니다. [선택적 작동 점검](checks.md)의 합성 예제를 실행하면 데이터 다운로드 없이 정렬 호출, raw 모멘트 계산, 작은 dense 기준 및 문서 chunk 처리를 확인할 수 있습니다.
 
 실제 native 출력 캐시가 있다면 [데이터 계약](data.md)에 맞춰 `example.py --input ... --provenance ...`로 GPA/CAIA 후보 행렬을 새로 구할 수 있습니다. 새 posterior fitting이나 모델 추론은 이 예제가 수행하지 않습니다.
 

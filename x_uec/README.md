@@ -21,54 +21,43 @@ cd x_uec
 
 설치 후에는 아래 **실제 데이터 정렬**로 진행합니다. 합성 데모나 단위 테스트를 먼저 실행해야 할 의존성은 없습니다.
 
-## 2. 실제 MS MARCO/SNLI 자료로 정렬하기
+## 2. 먼저 준비할 파일
 
-1. **기존 UEC가 uncertainty fitting에 사용한 선택 기록**을 재사용합니다. 개수만 맞춰 다시 추출하지 않습니다.
-2. 같은 문장·같은 실제 역할에 대해 각 모델의 최종 출력 평균, 좌표별 출력 분산, 독립 ID를 준비합니다.
-3. 원문 중복 그룹과 평가 원문 중복을 감사한 뒤 alignment-fit/diagnostic을 고정합니다. posterior fitting 자체는 바꾸지 않습니다.
-4. 피팅 관측만 `example.py`에 넣고, 별도 진단 관측에서 geometry와 작은 dense/implicit 동치성을 확인합니다.
+현재 정렬 프로그램이 직접 읽는 파일은 **두 개**입니다. 아래는 `x_uec/` 안에 두는 권장 이름입니다.
 
-입력 배열과 metadata를 준비한 뒤, 위와 같이 `x_uec/`에서 실행합니다.
+```text
+x_uec/
+└── local_data/
+    ├── alignment_fit.npz               # 정렬에 사용할 실제 평균·분산·문장 ID
+    └── alignment_fit_provenance.json   # 어느 데이터·모델·불확실성 계산에서 나온 값인지
+```
+
+이 파일들은 `git clone`으로 생기지 않습니다. 기존 UEC에서 계산한 실제 값으로 준비해야 합니다. 파일명은 바꿀 수 있지만, NPZ 안의 배열 이름은 코드가 정한 이름이어야 합니다. **[정확한 배열 이름과 파일별 내용](docs/data.md)**을 확인하세요.
+
+“기존 UEC의 선택 기록”은 당시 사용한 MS MARCO의 query–passage 목록과 SNLI의 premise–hypothesis 목록을 뜻합니다. 원래 `exp_mteb/fit_la.py`는 이 목록을 별도 파일로 저장하지 않습니다. 따라서 담당자가 당시 사용한 원문 목록·행 번호를 보관했는지 먼저 확인해야 합니다. 개수만 같게 다시 뽑아 같은 자료라고 부르지 않습니다.
+
+현재 `example.py`는 위 두 파일을 받아 정렬하는 프로그램입니다. **원문 목록이나 `la.pt`만 넣어서 평균·분산까지 자동 생성하는 준비 단계는 아직 연결되어 있지 않습니다.** 출력 평균·분산이 없다면 기존 UEC의 해당 계산 경로에서 먼저 만들어야 합니다.
+
+## 3. 준비한 파일로 실제 정렬 실행
+
+설치 단계 마지막의 `cd x_uec`까지 진행한 위치에서 실행합니다. 합성 데모를 먼저 실행할 필요는 없습니다.
 
 ```bash
 OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 \
   python example.py \
-  --input /data/uec/alignment_fit.npz \
-  --provenance /data/uec/alignment_fit_provenance.json \
+  --input local_data/alignment_fit.npz \
+  --provenance local_data/alignment_fit_provenance.json \
   --r0-sweeps 100 --max-sweeps 300 \
   --output outputs/my_alignment
 ```
 
-`example.py`는 이미 감사·분리한 캐시를 받는 예제입니다. 원문 감사와 분할을 자동 수행하지 않습니다. 출력의 `summary.json`에서 GPA/CAIA 종료 상태를 확인하세요. 이 예제는 후보 map을 저장하며 독립 진단 전에는 `alignment_ready_for_handoff=false`를 유지합니다.
+- `--input`: 실제 평균·분산·ID 파일입니다.
+- `--provenance`: 그 값의 데이터·모델·계산 방법을 적은 JSON 파일입니다.
+- `--output`: 결과를 저장할 새 폴더입니다. 같은 이름의 폴더가 이미 있으면 새 이름을 사용합니다.
 
-구체적인 배열 생성법은 [데이터 준비](docs/data.md), 진단과 기존 UEC 점수 연결은 [연결 가이드](docs/integration.md)에 있습니다.
+완료되면 `outputs/my_alignment/`에 `gpa_maps.npz`, `caia_maps.npz`, `fit_ids.npz`, `summary.json`이 생깁니다. 앞의 두 파일이 정렬 행렬입니다. `summary.json`에서 실제 종료 상태를 확인합니다.
 
-## 3. 선택 사항: 설치 후 작동 점검
-
-아래 명령은 코드가 새 환경에서 실행되는지 확인하고 싶을 때만 사용합니다. **실제 데이터 정렬에 필요한 캐시나 행렬을 준비하는 단계가 아니므로 생략해도 됩니다.**
-
-| 명령 | 확인하는 것 | 실제 실험에서의 사용 |
-|---|---|---|
-| `python -m unittest -v` | 기존 수식·입력·API 검산 테스트 | 선택 사항 |
-| `python example_implicit.py ...` | 작은 합성 데이터에서 implicit/dense 계산의 동치성 | 선택 사항; 실제 실험용 입력을 생성하지 않음 |
-| `python example.py --demo ...` | 작은 합성 데이터에서 정렬 API 연결 | 선택 사항; 생성한 demo map을 실제 데이터에 사용하지 않음 |
-| `python example.py --input ...` | 준비한 실제 UEC 출력으로 GPA/CAIA fitting | 위 섹션2의 실제 정렬 명령 |
-
-```bash
-# 선택: 검산 테스트
-OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 python -m unittest -v
-
-# 선택: 작은 합성 데이터에서 공분산 계산 확인
-OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 \
-  python example_implicit.py --output outputs/demo_implicit
-
-# 선택: 작은 합성 데이터에서 정렬 API 확인
-OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 \
-  python example.py --demo --r0-sweeps 3 --max-sweeps 3 \
-  --output outputs/demo_fit
-```
-
-`OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4`는 CPU 계산에 사용할 스레드를 제한합니다. `\`는 다음 줄까지 같은 명령이라는 뜻입니다. 출력 폴더가 이미 있으면 새 이름을 사용하세요.
+입력은 정렬용/진단용 문장을 미리 분리한 뒤 **정렬용 문장만** 포함해야 합니다. 이 명령은 원문 중복 검사와 분할을 자동 수행하지 않습니다. 생성한 행렬은 별도 문장에서 계산을 검산하기 전까지 후보 상태이며 `alignment_ready_for_handoff=false`입니다. 진단과 기존 UEC 점수 연결은 [연결 가이드](docs/integration.md)에 있습니다.
 
 ## 4. 전체 데이터에서 확인한 결과
 
@@ -92,7 +81,8 @@ OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 \
 | [docs/integration.md](docs/integration.md) | 큰 공분산 없는 계산과 UEC 연결·진단 절차 |
 | [docs/math.md](docs/math.md) | PDF 목적함수와 구현의 동치, 실제 SVD-MM 갱신식 |
 | [docs/results.md](docs/results.md) | 이번 전체 실행의 수렴·손실·수치 검산 |
-| [docs/reproduction.md](docs/reproduction.md) | 독립 예제와 과거 전체 실험 재현의 차이 |
+| [docs/reproduction.md](docs/reproduction.md) | 과거 전체 실험의 재현 조건 |
+| [docs/checks.md](docs/checks.md) | 개발자가 필요할 때 실행하는 선택적 검산 |
 | `caia.py` | 평균/공분산 정렬 및 SVD-MM |
 | `covariance_ops.py` | 비대각 공분산을 보존하는 raw 내적 모멘트 계산 |
 | `artifacts/full_run_20261127/` | 전체 실행의 수치 원본과 출처 checksum |

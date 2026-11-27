@@ -25,7 +25,7 @@
     "requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
     "input_provenance.template.json": "2b15a220f355100def56c49ba2ef3191645c7fe6ac9c42e839908445b5ffec8f",
     "test_objective_contract.py": "774c8cc6fbf039601a3841ed54c0430e2c4c3e7cdba376f7a8ab6914b9d75fdd",
-    "README.md": "3ad076581c153cee59a5c686c4342f9eda9327fcd4af8a4fd303121ed08d6435",
+    "README.md": "82f94e676e4180111718ff7d4c94a7c3f88f155647931ed889f336b963361edf",
     "reference_experiment/caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
     "reference_experiment/covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
     "reference_experiment/e4_data.py": "db88cf5a4695e27c8629d62c8a7461a8111e11a1148aad366f172da0b1e0b615",
@@ -48,10 +48,11 @@
     "reference_experiment/requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
     "reference_experiment/README.md": "a13ccc78421406ce6f24f8892b62c11fda13bfb2169e6d77e434ef8fb518cee5",
     "docs/math.md": "767de81dc5570455557d8a8e74b677a7b945dbbf37f90546d6f035fcb9e82a4f",
-    "docs/data.md": "e064e96d363ea072b1908ab51068a85bdd1d5a9ae24b77babc377e32f6204de6",
+    "docs/data.md": "d166ae54397e0e2739374ac3ac5a1a251fb3409e7539e17072b4d58cd5134542",
     "docs/integration.md": "ad46cf8e96f49d03a305f1f448204eb3273ee6bde7bfc36167db845c3d35230b",
     "docs/results.md": "9d5e7187f06497cf0db23a52e158cc81ba3d533bc8cf55d7fc82e83195cb8892",
-    "docs/reproduction.md": "e63eda8e8e376442d2f8a3a97def5e661d6f9c9b088c016fcfc5480bbe94d2fc",
+    "docs/reproduction.md": "ed4fe2189addcc8565a8355a7a7a3995ab32bb80ffd0d43f01318a9dfb2b347f",
+    "docs/checks.md": "0a4b383b8b74c7885d77cde007d278008af5ae3d26515bd94c9da8008cb3043c",
     "artifacts/full_run_20261127/status.json": "c9f1c82dba66e5ac62fb7218c111bee391ce8e7933f4b521592171e380c2943a",
     "artifacts/full_run_20261127/solver_summary.json": "cea5b4012f7fe396743419ca8e881d6173e8dce21b4aaab31e4d3b62707c9c93",
     "artifacts/full_run_20261127/alignment_losses.csv": "5e9f3e36dcb6bf3f76aed02630fe76b2f6d774f32d7598cabbb7b392e6064722",
@@ -66,5 +67,14 @@
     "math_contract_tests_passed": 3,
     "local_links": "passed",
     "renderer_cause": "GitHub parser reported Extra open brace for literal< and rejected operatorname; fenced math preserves backslashes"
+  },
+  "input_documentation_update": {
+    "required_files": [
+      "alignment_fit.npz",
+      "alignment_fit_provenance.json"
+    ],
+    "npz_keys": "all12checked against existing loader",
+    "original_selection_export": "upstream fit_la.py does not save selected rows; explicit documentation of missing preparation step",
+    "runtime_code_changed": false
   }
 }
