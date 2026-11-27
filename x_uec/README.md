@@ -23,7 +23,7 @@ cd x_uec
 ## 1. 실제 자료로 입력 만들기
 
 ```bash
-python prepare_alignment.py \
+python tools/prepare_alignment.py \
   --work-dir /data2/xuec-full \
   --gpu 0
 ```
@@ -33,7 +33,7 @@ python prepare_alignment.py \
 이 명령이 다음 일을 순서대로 합니다.
 
 1. 고정된 버전의 공개 MS MARCO와 SNLI를 내려받고, UEC `main`의 기본 선택을 seed 2025로 재현해 **MS MARCO 3,983쌍 + SNLI 3,775쌍**을 얻습니다. 저장소의 행 번호·문장 해시와도 대조합니다.
-2. Qwen → Harrier → GTE에서 각 모델의 불확실성을 새로 피팅합니다. 이전 AGNews 실험의 frozen-teacher v3 계산 방식을 사용하며 encoder 가중치는 고정합니다. 기본 logical batch는 512, 곡률 추정 반복은 32입니다.
+2. Qwen → Harrier → GTE에서 각 모델의 불확실성을 새로 피팅합니다. 이전 AGNews 실험의 frozen-teacher v3 계산 방식을 사용하며 encoder 가중치는 고정합니다. 기본 logical batch는 512, 곡률 추정은 32회부터 시작합니다. 좌표 검산이 미달하면 같은 seed의 난수 구간을 유지하며 64회, 최대 128회로 늘려 재검산합니다. 완료한 다른 모델은 다시 계산하지 않습니다.
 3. 같은 문장들의 평균과 native 좌표별 출력 분산을 새로 계산합니다. query/positive passage, premise/hypothesis 관계를 유지합니다.
 4. `inputs/alignment_fit.npz`와 `inputs/uec_input_provenance.json`을 자동으로 만듭니다.
 
@@ -73,12 +73,12 @@ OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
 전체 계산 전에 실제 공개 모델과 자료로 연결만 확인하려면 첫 명령에 `--profile smoke`를 넣고 별도 폴더를 쓰세요.
 
 ```bash
-python prepare_alignment.py --work-dir /data2/xuec-smoke --profile smoke --gpu 0
+python tools/prepare_alignment.py --work-dir /data2/xuec-smoke --profile smoke --gpu 0
 OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
   python run_alignment.py --inputs /data2/xuec-smoke/inputs --output /data2/xuec-smoke/alignment
 ```
 
-이 경우 각 데이터셋의 처음 32개 선택 쌍을 사용하고 정렬 반복을 3회로 줄입니다. 불확실성 계산 방식과 곡률 반복 32회는 유지합니다. 성공 상태는 `smoke_pass`이며 `alignment_ready_for_handoff`는 항상 `false`입니다. 실제 전체 실험에는 위의 기본 전체 명령을 사용하세요.
+이 경우 각 데이터셋의 처음 32개 선택 쌍을 사용하고 정렬 반복을 3회로 줄입니다. 불확실성 계산 방식과 최초 곡률 반복 32회는 유지하며, 같은 재검산 정책을 적용합니다. 성공 상태는 `smoke_pass`이며 `alignment_ready_for_handoff`는 항상 `false`입니다. 실제 전체 실험에는 위의 기본 전체 명령을 사용하세요.
 
 `example.py`, `example_implicit.py`, `input_provenance.template.json`은 별도 개발 예제입니다. 위 실험을 위해 실행하거나 작성할 필요가 없습니다.
 

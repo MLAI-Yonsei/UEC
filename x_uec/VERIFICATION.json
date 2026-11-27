@@ -2,7 +2,7 @@
   "base_repository": "https://github.com/MLAI-Yonsei/UEC",
   "base_commit": "1235269c727832a5d17bb1cefba80ce125eb2912",
   "branch": "X-UEC",
-  "portable_tests_passed": 69,
+  "portable_tests_passed": 77,
   "reference_tests_passed": 70,
   "synthetic_fit_example": "passed",
   "implicit_dense_block_stream_examples": "passed",
@@ -12,11 +12,12 @@
   "original_uec_runtime": "unchanged",
   "review": {
     "critical": 0,
+    "adaptive_refinement": "partial receipt, early CLI validation, finite/replay guards and attempt-specific64/128 chain fixed with RED/GREEN tests",
     "important": "atomic generation checkpoints; actual runtime/assets/noise binding; GPU sampling-period idle retry; work lock and smoke labels fixed with RED/GREEN regressions",
     "deferred_minor": []
   },
   "files_sha256": {
-    "README.md": "0904b5a2f2f47146c4077f9a8e1b41eef937cd02f27a0781df30dfc3cf30a372",
+    "README.md": "cfc8a08b68d859a6c9d32dc38dbc6487878a00db686f72eda99c32803f630d2f",
     "artifacts/full_run_20261127/alignment_losses.csv": "5e9f3e36dcb6bf3f76aed02630fe76b2f6d774f32d7598cabbb7b392e6064722",
     "artifacts/full_run_20261127/diagonal_summary.csv": "97bb46e1f216d1527ca9bc464db44737941553a0d3fcaf52744973f83004b955",
     "artifacts/full_run_20261127/geometry_preservation.csv": "7eb3f7fe3e13c7b93be3f30efcfb90c83a1bbe1836b0ef27ce481aede3a89b07",
@@ -28,15 +29,16 @@
     "artifacts/uec_main_full_20261127/harrier_output_summary.json": "2ddf7b2419d66a3662b786bfcc451f922874f6925f9fcbf344b33e829f0d29e0",
     "artifacts/uec_main_full_20261127/qwen_gaussian_summary.json": "6dc475d6a95b6821005af68f07960efdf73ea98bbbcaaaa1da935f139f0664d7",
     "artifacts/uec_main_full_20261127/qwen_output_summary.json": "3ed1b1d09c2899bf03b99adce3bee20fd956fcfe8ed76a840ff56af1d57c92c8",
+    "artifacts/uec_main_full_20261127/refinement_driver_executed.py": "cb8b33532fe40b471841526aaa0a3ec9a2c94d81514e4e8d8b5b289dcebb7388",
     "artifacts/uec_main_full_20261127/selection_verification.json": "997943d19fa1f0440a07438b4ebe55530e93367c46a2382b91bf2eef17bae10c",
-    "artifacts/uec_main_full_20261127/verification.json": "1f1f47bc0b3f51a65cccebc6b84369486e6d99d3d09a6f0e0b4ace6277b31dec",
+    "artifacts/uec_main_full_20261127/verification.json": "732218632450372c7baed57e7a02e643ff241e5c7a9b409c5cfa42f4edd2bad0",
     "caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
     "covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
     "docs/checks.md": "2818b1500ec7f94ee4d48749bd820c5625620cdad4d012e42c34cf081ecd6444",
-    "docs/data.md": "5aba5da88ea4f82a998d99d843e7b3f540959efb2b910570e9dd58e6a1abe420",
+    "docs/data.md": "871b61d6ee1254bd575d12de750ad14f6ea403ac5f2c8a151f63ca893fdebcd4",
     "docs/integration.md": "e5735480fdad5286b55a9e7e973deaa9af07e8ec4fdb125424f5826dd74e05b9",
     "docs/math.md": "767de81dc5570455557d8a8e74b677a7b945dbbf37f90546d6f035fcb9e82a4f",
-    "docs/reproduction.md": "b63655301a9544422b716e989c1a2c176382b8e783752add2a33cf70a9fa4c3b",
+    "docs/reproduction.md": "6acb6c8e1cbb913ea863ebf75b58f841c8d6485f1bdf4de35b3f8aabd9ba5e6e",
     "docs/results.md": "c230adab701b1fb1590db93fce4ea0f8395ae8535d2f9df5c92ba408844fb409",
     "docs/uec_main_results.md": "e5fe7cfc265f671f9b3973ac94269fd9a2998e1751fc4295843f28eddddb606b",
     "example.py": "7b00d47070de4f5494633339314ece03b931866a896ddd1c3189cd4dca67bd82",
@@ -90,6 +92,7 @@
     "standalone/reference/selection_protocol.json": "6b368a78feee3e917ef39a032d54bb0a4b1f2abac121cbf2b5a785316bcafaa8",
     "standalone/storage.py": "4462ab5b658bb64fc46c0e6f14e48cdf9df32259bd31a29814608747868f2d78",
     "standalone/worker.py": "681bd294ecb882a771bf3e198c5209f391f4991b667f5a1eb4817c55a14a8a35",
+    "test_adaptive_preparation.py": "54d704253a22bd4babfad09623a4d77749e02054d988240794305a21b2137282",
     "test_caia.py": "fb69b24d8593bb1dbd88e98ce896e0306a77dc81ba1c4e19dd2ad6dcd962c130",
     "test_covariance_ops.py": "c9612a4004b3555d6374fa6d8942391ea55c3aa0e70b434d329453cc063c5513",
     "test_examples.py": "88ec50028e85a3244542c06142a56437187f5f8752220457a2aeb4210d708a03",
@@ -101,7 +104,8 @@
     "test_standalone_data.py": "c87d9817860678a7bf7e14965a529498324184ffe1ad1927acc241b2eacacfb3",
     "test_standalone_loader.py": "cc91371e5cb6db89f4301033b7e985c74e2fc284a68d9939580b8a2c0d8c6e62",
     "test_standalone_math.py": "59fb09787ce63e23e12257084268c37e42ca6f34b19a3e6061c70ca61805844d",
-    "test_standalone_pipeline.py": "2394f11ce3bfe3821f1a0f6a1ba4232ed7a31404dbb2bb3d475b468df5e41ac9"
+    "test_standalone_pipeline.py": "2394f11ce3bfe3821f1a0f6a1ba4232ed7a31404dbb2bb3d475b468df5e41ac9",
+    "tools/prepare_alignment.py": "578006520d19f70d91dc1be6e3a46ff4eefdb575321bb0a78d64aa9057b564bd"
   },
   "documentation_update": {
     "change": "Mark demo runs optional; actual fitting first; fenced math/protected inline math prevent Markdown backslash escaping",
@@ -166,7 +170,15 @@
     "source_preparation": "fresh frozen-teacher SUM categorical GGN from pinned public models; not prefit Gaussian reuse",
     "storage": "source copy outside original project; private project imports blocked; only standard public model/dataset caches shared",
     "gamma_and_alignment_fitted_only_on_alignment_fit_partition": true,
-    "posterior_unseen": false
+    "posterior_unseen": false,
+    "mc_refinement": {
+      "model": "gte",
+      "initial_probes": 32,
+      "target_probes": 64,
+      "acceptance_rule_unchanged": true,
+      "seed_unchanged": true,
+      "executed_extra_driver_sha256": "cb8b33532fe40b471841526aaa0a3ec9a2c94d81514e4e8d8b5b289dcebb7388"
+    }
   },
   "current_validation_scope": "actual full UEC-main run when uec_main_full.status completes; historical local-selection full results remain separate"
 }

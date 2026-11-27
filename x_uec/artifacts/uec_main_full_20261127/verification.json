@@ -16,5 +16,13 @@
   "source_preparation": "fresh frozen-teacher SUM categorical GGN from pinned public models; not prefit Gaussian reuse",
   "storage": "source copy outside original project; private project imports blocked; only standard public model/dataset caches shared",
   "gamma_and_alignment_fitted_only_on_alignment_fit_partition": true,
-  "posterior_unseen": false
+  "posterior_unseen": false,
+  "mc_refinement": {
+    "model": "gte",
+    "initial_probes": 32,
+    "target_probes": 64,
+    "acceptance_rule_unchanged": true,
+    "seed_unchanged": true,
+    "executed_extra_driver_sha256": "cb8b33532fe40b471841526aaa0a3ec9a2c94d81514e4e8d8b5b289dcebb7388"
+  }
 }

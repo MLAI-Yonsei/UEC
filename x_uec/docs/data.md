@@ -2,7 +2,7 @@
 
 [실행 안내](../README.md) · [환경·재현 안내](reproduction.md)
 
-**사용자가 기존 실험 파일을 따로 준비할 필요는 없습니다.** GitHub에서 코드를 받은 뒤 `prepare_alignment.py --work-dir 작업폴더 --gpu 번호`를 실행하면 공개 자료를 받고 모든 입력을 생성합니다. `alignment_fit_provenance.json`이나 JSON 양식을 직접 만드는 단계가 없습니다.
+**사용자가 기존 실험 파일을 따로 준비할 필요는 없습니다.** GitHub에서 코드를 받은 뒤 `tools/prepare_alignment.py --work-dir 작업폴더 --gpu 번호`를 실행하면 공개 자료를 받고 모든 입력을 생성합니다. `alignment_fit_provenance.json`이나 JSON 양식을 직접 만드는 단계가 없습니다.
 
 ## GitHub에 포함한 것
 

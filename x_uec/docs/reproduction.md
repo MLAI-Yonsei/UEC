@@ -2,7 +2,7 @@
 
 [실행 안내](../README.md) · [입력 파일](data.md)
 
-기본 경로는 `prepare_alignment.py --work-dir ...`입니다. 필요한 계산 모듈, main 기본 선택의 재현 코드와 선택 기록은 이 브랜치에 포함했고, 공개 원문과 모델은 고정된 revision으로 다운로드합니다. 기존 `/data2/claire/UEC` 작업 폴더나 미리 피팅한 Gaussian은 필요하지 않습니다.
+기본 경로는 `tools/prepare_alignment.py --work-dir ...`입니다. 필요한 계산 모듈, main 기본 선택의 재현 코드와 선택 기록은 이 브랜치에 포함했고, 공개 원문과 모델은 고정된 revision으로 다운로드합니다. 기존 `/data2/claire/UEC` 작업 폴더나 미리 피팅한 Gaussian은 필요하지 않습니다.
 
 ## 모델과 환경
 
@@ -64,3 +64,9 @@ Encoder를 학습하거나 이동시키지 않고 마지막 projection 가중치
 작은 점검은 정렬 3회, 전체는 R0 최대 100회 및 각 arm 최대 300회입니다. 검산은 동일한 `full_e4.py`에서 GPA/CAIA를 비교하고, float64/float32의 implicit/dense 동치성 396개 항목, 거리 보존과 대각 근사 차이를 확인합니다.
 
 기존 전체 실행의 수치는 [기존 결과](results.md)에 보관합니다. 그것은 이전 로컬 선택 자료와 이미 피팅한 Gaussian에서 시작한 실행이므로, main 기본 선택 자료에서 다시 실행한 결과와 구분합니다. 이번 독립 실행의 새 Gaussian에서 같은 γ·수렴 횟수가 나오리라고 가정하지 않습니다. 새 실행의 실제 결과는 해당 작업 폴더의 `status.json`과 `solver_summary.json`을 사용하세요. 독립 실행 점검 증거는 `VERIFICATION.json`에 별도로 기록합니다.
+
+## 곡률 추정의 좌표 검산이 미달할 때
+
+`tools/prepare_alignment.py`는 기존 기본 준비기를 호출하고, 곡률 추정의 좌표 검산만 미달한 경우 32→64→128회의 고정 순서로 추정 정밀도를 높입니다. seed·문장·logical batch·합산 방식·검산 허용식은 바꾸지 않습니다. 매번 원래 수치 함수 `fit_gaussian()`을 호출하며 첫 32회 난수와 좌표 추정값이 그대로 포함되는지도 대조합니다. 입력·checkpoint·모델 검증 실패를 반복 수 증가로 넘기지 않습니다. 128회에도 미달하면 승인하지 않고 중단합니다.
+
+완료한 Qwen/Harrier 등의 결과는 보존합니다. 이전에 기본 준비 명령으로 32회 검산에서 중단된 작업 폴더에도 위 명령을 그대로 사용할 수 있습니다. 초기 요청은 `preparation_config.json`에 남고, **실제 모델별 횟수는 `models/{모델}/gaussian/summary.json`**에 기록합니다. 재검산 사유·실행 소스·동일 seed/난수 구간 확인은 `refinement_receipt.json`과 Gaussian의 파일 해시에 함께 묶습니다. 실패한 32회 기록은 `gaussian_rejected_32/`에 보관합니다.
