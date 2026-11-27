@@ -43,7 +43,7 @@ Encoder를 학습하거나 이동시키지 않고 마지막 projection 가중치
 
 `--physical-batch`는 encoder 추론을 나누는 크기이며 기본 8입니다. 메모리를 줄이려면 이 값만 줄일 수 있습니다. 이는 logical batch 512를 바꾸지 않습니다. 한 logical batch의 feature만 CPU에 두고 GPU에는 작은 묶음으로 보냅니다. 저장된 문장 분산도 native 벡터이며 문장별 1024×1024 공분산을 생성하지 않습니다. 길이가 매우 긴 자료는 물리 배치를 더 줄여야 할 수 있습니다.
 
-이 경로는 이전 AGNews 실험의 frozen-teacher v3 계산을 공개 자료에서 다시 수행합니다. 원래 UEC-LA와 같은 posterior·최종 점수라고 확인한 것은 아닙니다. 불확실성 피팅에는 정렬 진단용 문장도 들어가므로 `posterior_unseen=false`로 기록합니다.
+이 경로는 **원본 인코더를 고정하기 위해 채택한 frozen-teacher 곡률 근사**를 공개 자료에서 계산합니다. 원래 UEC-LA와 같은 posterior·최종 점수라고 확인한 것은 아닙니다. 불확실성 피팅에는 정렬 진단용 문장도 들어가므로 `posterior_unseen=false`로 기록합니다.
 
 ## 재개와 파일 검증
 

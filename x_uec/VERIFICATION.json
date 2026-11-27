@@ -17,7 +17,7 @@
     "deferred_minor": []
   },
   "files_sha256": {
-    "README.md": "cfc8a08b68d859a6c9d32dc38dbc6487878a00db686f72eda99c32803f630d2f",
+    "README.md": "4c1b0bf99d0839a22cd5402e0f53e04e1d1dfb2d12beb8b8f4acbea8ccc1dd3c",
     "artifacts/full_run_20261127/alignment_losses.csv": "5e9f3e36dcb6bf3f76aed02630fe76b2f6d774f32d7598cabbb7b392e6064722",
     "artifacts/full_run_20261127/diagonal_summary.csv": "97bb46e1f216d1527ca9bc464db44737941553a0d3fcaf52744973f83004b955",
     "artifacts/full_run_20261127/geometry_preservation.csv": "7eb3f7fe3e13c7b93be3f30efcfb90c83a1bbe1836b0ef27ce481aede3a89b07",
@@ -38,9 +38,9 @@
     "docs/data.md": "871b61d6ee1254bd575d12de750ad14f6ea403ac5f2c8a151f63ca893fdebcd4",
     "docs/integration.md": "e5735480fdad5286b55a9e7e973deaa9af07e8ec4fdb125424f5826dd74e05b9",
     "docs/math.md": "767de81dc5570455557d8a8e74b677a7b945dbbf37f90546d6f035fcb9e82a4f",
-    "docs/reproduction.md": "6acb6c8e1cbb913ea863ebf75b58f841c8d6485f1bdf4de35b3f8aabd9ba5e6e",
+    "docs/reproduction.md": "a2c79b51e02f2803f2f057aa02ec997527e48e08509fce6a5249f95b3e5c90cd",
     "docs/results.md": "c230adab701b1fb1590db93fce4ea0f8395ae8535d2f9df5c92ba408844fb409",
-    "docs/uec_main_results.md": "e5fe7cfc265f671f9b3973ac94269fd9a2998e1751fc4295843f28eddddb606b",
+    "docs/uec_main_results.md": "d74ca472f828f158bab88707d1999c157da693df1a24e9ec1bac760b1885a99d",
     "example.py": "7b00d47070de4f5494633339314ece03b931866a896ddd1c3189cd4dca67bd82",
     "example_implicit.py": "f1450405679380930e145720e0f231834a4a49483fa0d85fc872b11ece04e466",
     "input_provenance.template.json": "2b15a220f355100def56c49ba2ef3191645c7fe6ac9c42e839908445b5ffec8f",

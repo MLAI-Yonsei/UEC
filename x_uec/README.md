@@ -1,6 +1,6 @@
 # X-UEC: MS MARCO/SNLI에서 CAIA v3 정렬하기
 
-**이 GitHub 브랜치의 코드만 받아 실행할 수 있습니다.** 필요한 공개 데이터와 모델은 프로그램이 내려받습니다. 이전 실험 폴더, AGNews 배열, 이미 피팅된 Gaussian 파일을 준비할 필요가 없습니다.
+**이 GitHub 브랜치의 코드만 받아 실행할 수 있습니다.** 필요한 공개 데이터와 모델은 프로그램이 내려받습니다. 이전 실험 폴더나 이미 피팅된 Gaussian 파일을 준비할 필요가 없습니다.
 
 실행은 두 단계입니다. 먼저 **선택한 UEC 자료로 불확실성을 새로 피팅하고 문장별 평균·분산을 계산**합니다. 다음으로 그 숫자들로 GPA/CAIA 정렬 행렬을 피팅하고 진단합니다. 출처 JSON도 자동 생성하므로 양식을 직접 채우지 않습니다.
 
@@ -33,13 +33,13 @@ python tools/prepare_alignment.py \
 이 명령이 다음 일을 순서대로 합니다.
 
 1. 고정된 버전의 공개 MS MARCO와 SNLI를 내려받고, UEC `main`의 기본 선택을 seed 2025로 재현해 **MS MARCO 3,983쌍 + SNLI 3,775쌍**을 얻습니다. 저장소의 행 번호·문장 해시와도 대조합니다.
-2. Qwen → Harrier → GTE에서 각 모델의 불확실성을 새로 피팅합니다. 이전 AGNews 실험의 frozen-teacher v3 계산 방식을 사용하며 encoder 가중치는 고정합니다. 기본 logical batch는 512, 곡률 추정은 32회부터 시작합니다. 좌표 검산이 미달하면 같은 seed의 난수 구간을 유지하며 64회, 최대 128회로 늘려 재검산합니다. 완료한 다른 모델은 다시 계산하지 않습니다.
+2. Qwen → Harrier → GTE에서 각 모델의 불확실성을 새로 피팅합니다. **원본 인코더를 고정하기 위해 채택한 frozen-teacher 곡률 근사**를 사용합니다. 인코더 가중치는 업데이트하지 않습니다. 기본 logical batch는 512, 곡률 추정은 32회부터 시작합니다. 좌표 검산이 미달하면 같은 seed의 난수 구간을 유지하며 64회, 최대 128회로 늘려 재검산합니다. 완료한 다른 모델은 다시 계산하지 않습니다.
 3. 같은 문장들의 평균과 native 좌표별 출력 분산을 새로 계산합니다. query/positive passage, premise/hypothesis 관계를 유지합니다.
 4. `inputs/alignment_fit.npz`와 `inputs/uec_input_provenance.json`을 자동으로 만듭니다.
 
 **어떤 문장을 선택하나요?** UEC `main`처럼 같은 Python 난수 상태에서 MS MARCO train의 5%를 먼저 뽑고 첫 positive passage가 있는 행만 남긴 다음, SNLI train의 2%를 뽑고 entailment만 남깁니다. 유효한 문장부터 개수를 맞춰 다시 뽑는 방식이 아닙니다. 원본 `main` 전처리 함수를 직접 실행해 문장과 순서가 모두 같음을 확인했습니다. [선택 코드·기록](docs/data.md)을 참고하세요.
 
-선택 데이터는 `main`과 맞추되, 불확실성 계산은 기존 AGNews 실험에서 검증한 frozen-teacher v3 방식을 이어갑니다. 원래 UEC-LA와 같은 posterior·최종 점수라고 주장하지 않습니다.
+선택 데이터는 `main`과 맞추고, 불확실성 계산에는 **원본 인코더를 고정하기 위해 채택한 frozen-teacher 곡률 근사**를 사용합니다. 원래 UEC-LA와 같은 posterior·최종 점수라고 주장하지 않습니다.
 
 처음에는 공개 자료 다운로드가 필요합니다. 기본 캐시는 작업 폴더의 `cache/`에 생깁니다. 이미 공개 모델을 내려받은 표준 Hugging Face hub 캐시가 있다면 `--cache-dir /data2/사용자/huggingface/hub`를 추가할 수 있습니다. 모든 필요한 공개 파일을 받은 뒤에는 `--offline`으로 네트워크 없이 실행할 수 있습니다.
 
