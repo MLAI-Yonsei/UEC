@@ -47,7 +47,7 @@
     "reference_experiment/full_audit.py": "451037523173ee0a2365a202f04dd44238fe5d953536031eb5955fa9c8f270e6",
     "reference_experiment/requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
     "reference_experiment/README.md": "a13ccc78421406ce6f24f8892b62c11fda13bfb2169e6d77e434ef8fb518cee5",
-    "docs/math.md": "93a2e59704729e6151cdf0471c0111704558430b95ad7029a34436453b9bf9be",
+    "docs/math.md": "767de81dc5570455557d8a8e74b677a7b945dbbf37f90546d6f035fcb9e82a4f",
     "docs/data.md": "e064e96d363ea072b1908ab51068a85bdd1d5a9ae24b77babc377e32f6204de6",
     "docs/integration.md": "ad46cf8e96f49d03a305f1f448204eb3273ee6bde7bfc36167db845c3d35230b",
     "docs/results.md": "9d5e7187f06497cf0db23a52e158cc81ba3d533bc8cf55d7fc82e83195cb8892",
@@ -62,8 +62,9 @@
   },
   "documentation_update": {
     "change": "Mark demo runs optional; actual fitting first; fenced math/protected inline math prevent Markdown backslash escaping",
-    "math_formula_bodies": "all9unchanged",
+    "math_formula_bodies": "same equations; display macros normalized operatorname->mathrm and literal<->lt after real GitHub renderer rejection",
     "math_contract_tests_passed": 3,
-    "local_links": "passed"
+    "local_links": "passed",
+    "renderer_cause": "GitHub parser reported Extra open brace for literal< and rejected operatorname; fenced math preserves backslashes"
   }
 }

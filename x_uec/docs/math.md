@@ -16,21 +16,21 @@ PDF의 목표는 다음과 같다.
 
 ```math
 F(R,U)=\sum_m\|Z_m-U\|_F^2
- +\gamma\sum_{m<n}\sum_{i=1}^{N}\|P_{m,i}-P_{n,i}\|_F^2.
+ +\gamma\sum_{m \lt n}\sum_{i=1}^{N}\|P_{m,i}-P_{n,i}\|_F^2.
 ```
 
 고정 R에서 최적 중심은 $`U^*=\frac13\sum_mZ_m`$이고,
 
 ```math
-\sum_m\|Z_m-U^*\|_F^2=\frac13\sum_{m<n}\|Z_m-Z_n\|_F^2.
+\sum_m\|Z_m-U^*\|_F^2=\frac13\sum_{m \lt n}\|Z_m-Z_n\|_F^2.
 ```
 
 실제 `caia.objective()`가 계산하는 것은
 
 ```math
-L_\mu=\frac1{9N}\sum_{m<n}\|Z_m-Z_n\|_F^2,
+L_\mu=\frac1{9N}\sum_{m \lt n}\|Z_m-Z_n\|_F^2,
 \qquad
-L_C=\frac1{3N}\sum_{m<n,i}\|P_{m,i}-P_{n,i}\|_F^2,
+L_C=\frac1{3N}\sum_{m \lt n,i}\|P_{m,i}-P_{n,i}\|_F^2,
 ```
 
 ```math
@@ -44,11 +44,11 @@ L_{code}=L_\mu+\gamma L_C=\frac1{3N}F(R,U^*).
 ## 2. 공분산 제곱근도 PDF의 식이다
 
 v는 최종 native 출력 좌표의 분산이며 표준편차나 parameter variance가 아니다.
-$`D_{m,i}=\operatorname{diag}(v_{m,i})`$인 대각 surrogate에 대해
+$`D_{m,i}=\mathrm{diag}(v_{m,i})`$인 대각 surrogate에 대해
 
 ```math
 \widetilde\Sigma_{m,i}=R_m^TD_{m,i}R_m,\qquad
-P_{m,i}=R_m^T\operatorname{diag}(\sqrt{v_{m,i}})R_m.
+P_{m,i}=R_m^T\mathrm{diag}(\sqrt{v_{m,i}})R_m.
 ```
 
 P는 대칭 PSD이고, row-isometry 때문에
@@ -66,7 +66,7 @@ P_{m,i}^2=R_m^T\sqrt{D_{m,i}}(R_mR_m^T)\sqrt{D_{m,i}}R_m
 ## 3. 실제 갱신은 중심 소거 후의 순차 SVD-MM이다
 
 PDF의 GPA 설명처럼 U를 고정한 Procrustes 부분문제에서는
-$`X_m^TU=A\operatorname{diag}(s)B^T`$의 thin SVD로 $`R_m=AB^T`$를 얻는다.
+$`X_m^TU=A\mathrm{diag}(s)B^T`$의 thin SVD로 $`R_m=AB^T`$를 얻는다.
 이 설명은 평균만 정렬하는 GPA의 설명으로 맞다.
 
 현재 v3는 U를 명시적으로 고정/교대하는 루프 대신 위 동치 목적에서 U를
@@ -86,7 +86,7 @@ K_{mn}=\sqrt{V_m}^{\,T}\sqrt{V_n}/N
 다른 모델을 고정한 한 블록에서 최소화는 다음을 최대화하는 것과 같다.
 
 ```math
-g_m(R)=\operatorname{tr}\left(R^T\sum_{n\ne m}S_{mn}R_n\right)
+g_m(R)=\mathrm{tr}\left(R^T\sum_{n\ne m}S_{mn}R_n\right)
  +3\gamma\sum_{n\ne m}\langle K_{mn},(RR_n^T)^{\odot2}\rangle.
 ```
 
@@ -100,7 +100,7 @@ M_m^{(t)}=\sum_{n\ne m}S_{mn}R_n
 ```
 
 `caia.block_matrix()`가 이 식을 계산한다. 갱신은
-$`M_m^{(t)}=A\operatorname{diag}(s)B^T`$, $`R_m^{new}=AB^T`$다.
+$`M_m^{(t)}=A\mathrm{diag}(s)B^T`$, $`R_m^{new}=AB^T`$다.
 GTE 갱신에는 같은 sweep에서 새로 얻은 Harrier map을 사용한다.
 
 여기서 **6γ는 중심을 소거한 목적함수의 상대 계수와 이차항 미분에서 나온다.**
