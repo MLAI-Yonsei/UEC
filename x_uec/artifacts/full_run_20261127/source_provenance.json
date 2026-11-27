@@ -1,0 +1,159 @@
+{
+  "source_run": "full_20261127_02",
+  "source_handoff_zip": "caia_uec_handoff_20261127_v3.zip",
+  "source_handoff_zip_sha256": "c56acfa45e6fb110f50b6050363407848d93df5a24a2707489608de5c2ad1f58",
+  "backend_sha256": {
+    "caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
+    "covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c"
+  },
+  "executed_reference_source_sha256": {
+    "caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
+    "covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
+    "e4_data.py": "db88cf5a4695e27c8629d62c8a7461a8111e11a1148aad366f172da0b1e0b615",
+    "e4_refit.py": "081c21722c043b1aee71739662d69f0ce47dda2307271b2778db6f208305c232",
+    "example.py": "6cd0e78be14a7cde01f69bd1913ca7dba09cb17a7f8b1e8cd066f7bdd745b843",
+    "export_ag_cache.py": "4f123cf3cc1282e483fd8f4a3a05875af7e5e0a8363a941272a99b0c3a1c53a0",
+    "run_covariance_validation.py": "3b64db51755d81f36da279a7f5b4eb34c45ec80ce2930a0b73781095544897a6",
+    "run_e4_refit.py": "7ecde946344d0408b0b0f21b7344439296bfc9416d1f23965facf164c5c6f52f",
+    "test_cache_export.py": "4b18ba392214776b4a259ec939c6cff1b4306eccd9b25d3fb9e20239532ab5ef",
+    "test_caia.py": "fb69b24d8593bb1dbd88e98ce896e0306a77dc81ba1c4e19dd2ad6dcd962c130",
+    "test_covariance_ops.py": "c9612a4004b3555d6374fa6d8942391ea55c3aa0e70b434d329453cc063c5513",
+    "test_covariance_runner.py": "a461459d74523ccba8d38891fefb2ab17786875f1851c2688c89db9a89a618b4",
+    "test_e4_data.py": "be7f2e6f47b23a6004a720a5b2a049143f4ee2dbb48c2e00b662c39aeec8504d",
+    "test_e4_refit.py": "1a27d1603b3dc5a7d4d6b1fca88e6ccbac0cfad61df27e82079b9a69d8fd6f0f",
+    "test_objective_contract.py": "774c8cc6fbf039601a3841ed54c0430e2c4c3e7cdba376f7a8ab6914b9d75fdd",
+    "test_full_e4.py": "2166b1d33282fb93ec7d4dc8a837e3849c864e9c17bfcc1f66b3d6a76a2bfeb9",
+    "full_e4.py": "91992fb3135f22384683c206625237ae2a2475629a0796eb72220f2eeda6f904",
+    "test_full_audit.py": "d8518fbfea6c2f62551ed62645eba63e3faca940505038e3f167ac38c6015643",
+    "full_audit.py": "451037523173ee0a2365a202f04dd44238fe5d953536031eb5955fa9c8f270e6"
+  },
+  "input_cache_sha256": "f23c30ba175dd5e548184e0c8077441ef139bffa67a457259c5f9cc477688e8b",
+  "models": {
+    "qwen": {
+      "encoder_kind": "author",
+      "model_id": "Qwen/Qwen3-Embedding-0.6B",
+      "revision": "b22da495047858cce924d27d76261e96be6febc0",
+      "tokenizer_revision": "b22da495047858cce924d27d76261e96be6febc0",
+      "prompt": "Instruct: Retrieve semantically similar text\nQuery:",
+      "max_seq_length": 8192,
+      "actual_dtype": "torch.float16",
+      "native_dim": 1024,
+      "actual_attention_backend": "flash_attention_2",
+      "padding_side": "left",
+      "truncation_side": "right",
+      "pooling": "last_valid_token",
+      "normalization": "author F.normalize in FP16; cache converted to float32",
+      "input_preprocessing": "raw text passed unchanged; explicit prefix concatenation; no strip",
+      "source_sha256": "a02c3466cdd0bdaa9244887cdd30d3057645c729b5e7be0a15740de8bff4adfd",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.51.3",
+        "sentence-transformers": "5.2.2",
+        "datasets": "2.21.0",
+        "numpy": "2.3.5",
+        "scipy": "1.17.0",
+        "huggingface-hub": "0.36.2",
+        "tokenizers": "0.21.4",
+        "safetensors": "0.7.0",
+        "mteb": "1.38.9",
+        "flash-attn": "2.7.4.post1"
+      }
+    },
+    "harrier": {
+      "model_id": "microsoft/harrier-oss-v1-270m",
+      "revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+      "native_dim": 640,
+      "prompt": "Instruct: Retrieve semantically similar text\nQuery: ",
+      "prompt_name": "sts_query",
+      "max_seq_length": 32768,
+      "tokenizer_revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+      "actual_dtype": "torch.float32",
+      "actual_attention_backend": "sdpa",
+      "padding_side": "right",
+      "truncation_side": "right",
+      "pooling": {
+        "word_embedding_dimension": 640,
+        "pooling_mode_cls_token": false,
+        "pooling_mode_mean_tokens": false,
+        "pooling_mode_max_tokens": false,
+        "pooling_mode_mean_sqrt_len_tokens": false,
+        "pooling_mode_weightedmean_tokens": false,
+        "pooling_mode_lasttoken": true,
+        "include_prompt": true
+      },
+      "versions": {
+        "torch": "2.6.0+cu118",
+        "transformers": "4.57.6",
+        "sentence-transformers": "5.2.2",
+        "datasets": "4.8.4",
+        "numpy": "2.3.5",
+        "scipy": "1.17.0",
+        "huggingface-hub": "0.36.2",
+        "tokenizers": "0.22.2",
+        "safetensors": "0.7.0"
+      },
+      "modules": [
+        "Transformer",
+        "Pooling",
+        "Normalize"
+      ],
+      "do_lower_case": false,
+      "input_preprocessing": "official SentenceTransformer tokenize (strip); explicit sts_query prompt string"
+    },
+    "gte": {
+      "model_id": "thenlper/gte-base",
+      "revision": "c078288308d8dee004ab72c6191778064285ec0c",
+      "native_dim": 768,
+      "max_seq_length": 512,
+      "prompt": "",
+      "truncation_side": "right",
+      "inference_dtype": "fp32",
+      "attention_backend": "sdpa",
+      "actual_dtype": "torch.float32",
+      "tokenizer_revision": "c078288308d8dee004ab72c6191778064285ec0c",
+      "tokenizer_class": "BertTokenizerFast",
+      "actual_padding_side": "right",
+      "actual_truncation_side": "right",
+      "actual_attention_backend": "sdpa",
+      "pooling": {
+        "word_embedding_dimension": 768,
+        "pooling_mode_cls_token": false,
+        "pooling_mode_mean_tokens": true,
+        "pooling_mode_max_tokens": false,
+        "pooling_mode_mean_sqrt_len_tokens": false,
+        "pooling_mode_weightedmean_tokens": false,
+        "pooling_mode_lasttoken": false,
+        "include_prompt": true
+      },
+      "modules": [
+        "Transformer",
+        "Pooling",
+        "Normalize"
+      ],
+      "default_prompt_name": null,
+      "encode_prompt_policy": "explicit prompt parameter, including empty GTE prompt",
+      "library_text_preprocessing": "SentenceTransformer official Transformer.tokenize: strip then optional lower",
+      "do_lower_case": false,
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.51.3",
+        "sentence-transformers": "5.2.2",
+        "datasets": "2.21.0",
+        "numpy": "2.3.5",
+        "scipy": "1.17.0",
+        "huggingface-hub": "0.36.2",
+        "tokenizers": "0.21.4",
+        "safetensors": "0.7.0"
+      }
+    }
+  },
+  "uncertainty_source": "frozen_teacher_v3_reused",
+  "scope": "Local frozen-teacher numerical alignment; original UEC-LA posterior and downstream scoring remain separate.",
+  "runtime_policy_verification": "Inherited policy; current package versions and Qwen author source were compared retrospectively, not captured at worker start.",
+  "evaluation_audit": "Replayed from all ten original evaluation files; corrected evaluation_scope stored locally without mutating worker-pinned inputs.",
+  "maps_sha256": {
+    "gpa_maps.npz": "57524d811c3668c6506cf871f92b3ca8dd3db1d53eba227d61736ed0a169d9e7",
+    "caia_maps.npz": "7a3345e8c3dc40757fc6f8c52b0b24ee2893c5620adbdb819ce8206b061842ed"
+  },
+  "large_inputs_and_maps_in_git": false
+}

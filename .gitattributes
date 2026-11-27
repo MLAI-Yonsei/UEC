@@ -1,0 +1,2 @@
+# Preserve byte-identical CSV evidence from Python's csv writer.
+x_uec/artifacts/**/*.csv -text whitespace=cr-at-eol

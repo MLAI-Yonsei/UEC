@@ -1,0 +1,20 @@
+{
+  "dataset": "REPLACE_WITH_ACTUAL_UEC_FITTING_DATASET_REVISIONS_AND_SELECTION",
+  "split": "alignment_fit",
+  "selection_manifest_sha256": "REPLACE_WITH_ACTUAL_64_CHARACTER_LOWERCASE_HEX_SHA256",
+  "models": {
+    "qwen": {"model_id": "Qwen/Qwen3-Embedding-0.6B", "revision": "REPLACE_WITH_ACTUAL_REVISION", "dimension": 1024},
+    "harrier": {"model_id": "microsoft/harrier-oss-v1-270m", "revision": "REPLACE_WITH_ACTUAL_REVISION", "dimension": 640},
+    "gte": {"model_id": "thenlper/gte-base", "revision": "REPLACE_WITH_ACTUAL_REVISION", "dimension": 768}
+  },
+  "uncertainty_source": "REPLACE_WITH_APPROVED_OUTPUT_VARIANCE_SOURCE_POSTERIOR_CONFIG_AND_CHECKSUMS",
+  "output_stage": "l2_normalized",
+  "covariance_representation": "native_output_diagonal_surrogate",
+  "role_policy": "REPLACE_WITH_ACTUAL_PER_MODEL_ROLE_PROMPT_POOLING_LENGTH_PADDING_DTYPE_AND_STAGE_CONFIRMATION",
+  "alignment_diagnostic_separated": false,
+  "evaluation_overlap_audit": {
+    "status": "not_run",
+    "fit_evaluation_canonical_overlap": null,
+    "scope": "REPLACE_WITH_EVALUATION_QUERY_CORPUS_TEST_SCOPE_AND_CANONICAL_HASH_AUDIT_EVIDENCE"
+  }
+}

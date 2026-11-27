@@ -1,0 +1,13 @@
+# Local Python environments and generated caches
+__pycache__/
+*.py[cod]
+.venv*/
+.pytest_cache/
+
+# Local X-UEC inputs, candidate maps and demonstration output
+x_uec/outputs/
+x_uec/local_data/
+x_uec/reference_experiment/outputs/
+x_uec/**/*.npz
+x_uec/**/*.npy
+*.zip
