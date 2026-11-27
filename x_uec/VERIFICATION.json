@@ -25,7 +25,7 @@
     "requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
     "input_provenance.template.json": "2b15a220f355100def56c49ba2ef3191645c7fe6ac9c42e839908445b5ffec8f",
     "test_objective_contract.py": "774c8cc6fbf039601a3841ed54c0430e2c4c3e7cdba376f7a8ab6914b9d75fdd",
-    "README.md": "d7d76ec8e16b5c2c4283023b471383250b8b8982fb55bcc2291ec0dd49742034",
+    "README.md": "3ad076581c153cee59a5c686c4342f9eda9327fcd4af8a4fd303121ed08d6435",
     "reference_experiment/caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
     "reference_experiment/covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
     "reference_experiment/e4_data.py": "db88cf5a4695e27c8629d62c8a7461a8111e11a1148aad366f172da0b1e0b615",
@@ -47,7 +47,7 @@
     "reference_experiment/full_audit.py": "451037523173ee0a2365a202f04dd44238fe5d953536031eb5955fa9c8f270e6",
     "reference_experiment/requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
     "reference_experiment/README.md": "a13ccc78421406ce6f24f8892b62c11fda13bfb2169e6d77e434ef8fb518cee5",
-    "docs/math.md": "56410bea07c832579a22b4dcf36c4165f07c086258af0c7c809442c8a2812a8e",
+    "docs/math.md": "93a2e59704729e6151cdf0471c0111704558430b95ad7029a34436453b9bf9be",
     "docs/data.md": "e064e96d363ea072b1908ab51068a85bdd1d5a9ae24b77babc377e32f6204de6",
     "docs/integration.md": "ad46cf8e96f49d03a305f1f448204eb3273ee6bde7bfc36167db845c3d35230b",
     "docs/results.md": "9d5e7187f06497cf0db23a52e158cc81ba3d533bc8cf55d7fc82e83195cb8892",
@@ -59,5 +59,11 @@
     "artifacts/full_run_20261127/moment_equivalence.csv": "fc119daa051d6e47e043064175102632865eaaee11a59957df4d302ba67edb5a",
     "artifacts/full_run_20261127/diagonal_summary.csv": "97bb46e1f216d1527ca9bc464db44737941553a0d3fcaf52744973f83004b955",
     "artifacts/full_run_20261127/source_provenance.json": "cfa4bdcdc427ec8fba212168dd7a233a17045187195de754339689a066b51017"
+  },
+  "documentation_update": {
+    "change": "Mark demo runs optional; actual fitting first; fenced math/protected inline math prevent Markdown backslash escaping",
+    "math_formula_bodies": "all9unchanged",
+    "math_contract_tests_passed": 3,
+    "local_links": "passed"
   }
 }
