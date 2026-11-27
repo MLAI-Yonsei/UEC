@@ -70,3 +70,9 @@ Encoder를 학습하거나 이동시키지 않고 마지막 projection 가중치
 `tools/prepare_alignment.py`는 기존 기본 준비기를 호출하고, 곡률 추정의 좌표 검산만 미달한 경우 32→64→128회의 고정 순서로 추정 정밀도를 높입니다. seed·문장·logical batch·합산 방식·검산 허용식은 바꾸지 않습니다. 매번 원래 수치 함수 `fit_gaussian()`을 호출하며 첫 32회 난수와 좌표 추정값이 그대로 포함되는지도 대조합니다. 입력·checkpoint·모델 검증 실패를 반복 수 증가로 넘기지 않습니다. 128회에도 미달하면 승인하지 않고 중단합니다.
 
 완료한 Qwen/Harrier 등의 결과는 보존합니다. 이전에 기본 준비 명령으로 32회 검산에서 중단된 작업 폴더에도 위 명령을 그대로 사용할 수 있습니다. 초기 요청은 `preparation_config.json`에 남고, **실제 모델별 횟수는 `models/{모델}/gaussian/summary.json`**에 기록합니다. 재검산 사유·실행 소스·동일 seed/난수 구간 확인은 `refinement_receipt.json`과 Gaussian의 파일 해시에 함께 묶습니다. 실패한 32회 기록은 `gaussian_rejected_32/`에 보관합니다.
+
+## 변환 후 성능도 자동으로 비교합니다
+
+`tools/run_alignment.py`는 정렬·수치 진단 후 내부 positive-pair matching2개와 별도6태스크를 평가합니다. 이미 검증된 benchmark 평균 캐시가 있으면 재사용하고, 없으면 고정된 공개 자료에서 `prepare_public_benchmarks()`로 생성합니다. 별도의 JSON 작성이나 yes 입력은 필요하지 않습니다. 평가 입력·정답·support 추출은 모든11조건에 같습니다. 원본 모델의 가중치는 업데이트하지 않습니다.
+
+현재 결과의 Qwen 평가 캐시는 FlashAttention2/FP16 출력 정규화를 사용했고, 새 정렬 입력은 SDPA/FP64 최종경로를 사용했습니다. 같은 평가 캐시를 모든 조건에 적용하고 이 차이를 provenance에 명시했습니다. 공개 자료에서 새로 생성하는 기본 평가는 현재 실행 환경을 사용하므로 기존 캐시와 bit 단위 일치를 주장하지 않습니다. 역할별 prompt·모델 revision·pooling·padding·최대길이는 고정합니다. [실제 성능 표](performance.md)를 확인하세요.

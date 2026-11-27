@@ -7,3 +7,6 @@ huggingface-hub==0.36.2
 safetensors==0.7.0
 tokenizers==0.21.4
 pyarrow==26.0.1
+datasets==2.21.0
+scipy==1.17.0
+scikit-learn==1.8.0

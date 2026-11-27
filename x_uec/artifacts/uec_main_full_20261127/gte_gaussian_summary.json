@@ -1,0 +1,42 @@
+{
+  "method": "accepted v3 frozen-teacher SUM categorical GGN; no encoder update",
+  "prior_precision": 660.8642117343591,
+  "teacher_kl_per_observation": -9.891007072752558e-19,
+  "coordinate_audit": {
+    "passed": true,
+    "max_abs_z": 2.559041684561888,
+    "zero_se_count": 0,
+    "rule": "abs(estimate-exact) <= 3.29*SE + 1e-8*max(1,abs(exact))",
+    "max_abs_error": 0.002408246538432378,
+    "max_tolerance": 0.006956825844753298
+  },
+  "probes": 64,
+  "logical_batch": 512,
+  "physical_batch": 8,
+  "seed": 241128,
+  "parameter_gaussian_fitted_here": true,
+  "seconds": 1033.3996615540236,
+  "policy": {
+    "model_id": "thenlper/gte-base",
+    "revision": "c078288308d8dee004ab72c6191778064285ec0c",
+    "tokenizer_revision": "c078288308d8dee004ab72c6191778064285ec0c",
+    "native_dim": 768,
+    "max_seq_length": 512,
+    "prompt": "",
+    "actual_dtype": "torch.float32",
+    "actual_attention_backend": "sdpa",
+    "padding_side": "right",
+    "truncation_side": "right",
+    "pooling": "masked_mean",
+    "versions": {
+      "torch": "2.6.0+cu124",
+      "transformers": "4.51.3",
+      "sentence-transformers": "5.2.2",
+      "numpy": "2.3.5",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.7.0",
+      "tokenizers": "0.21.4"
+    },
+    "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+  }
+}

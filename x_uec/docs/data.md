@@ -58,7 +58,7 @@
 | Harrier | `mean__harrier` | `variance__harrier` | `mean_ids__harrier`, `variance_ids__harrier` |
 | GTE | `mean__gte` | `variance__gte` | `mean_ids__gte`, `variance_ids__gte` |
 
-평균·분산의 열은 각각 1024/640/768개입니다. 같은 행은 세 모델에서 같은 문장·같은 역할을 뜻합니다. 분산은 파라미터 분산 자체가 아니라 **최종 L2 정규화까지 전파한 native 출력 분산**입니다. 문장마다 1024×1024 행렬을 저장하지 않습니다.
+native는 각 모델의 원래 임베딩 좌표계를 뜻합니다. 평균·분산의 열은 각각 1024/640/768개입니다. 같은 행은 세 모델에서 같은 문장·같은 역할을 뜻합니다. 분산은 파라미터 분산 자체가 아니라 **최종 L2 정규화까지 전파한 native 출력 분산**입니다. 문장마다 1024×1024 행렬을 저장하지 않습니다.
 
 이 입력에는 정렬용과 진단용 관측이 모두 들어갑니다. `split.json`이 구분합니다. 같은 문장 해시는 한쪽에만 속합니다. 기본 main 선택은 15,516개 관측을 12,414개 정렬용/3,102개 진단용으로 나눕니다. 추가 평가 문장을 제외하면 개수는 달라질 수 있습니다.
 
@@ -80,3 +80,5 @@
 - [SNLI: 이어서 2% 추출한 뒤 entailment 유지](https://github.com/MLAI-Yonsei/UEC/blob/1235269c727832a5d17bb1cefba80ce125eb2912/utils/data_utils/snli.py#L29)
 
 원본 함수를 수정하지 않고 recording tokenizer로 실행해 반환되는 문장 목록과 순서를 모두 대조했습니다. 따라서 개수만 같은 별도 표본을 사용하는 것이 아닙니다.
+
+성능 평가 입력도 자동으로 준비합니다. 고정된 공개6태스크의 원문 ID·해시·정답·분류 support 추출은 `tools/benchmark_reference/`에 포함했습니다. 평가용 평균은 `작업폴더/benchmarks/`에 생성하고, 피팅 문장과 겹치는 외부 평가 항목은 제외합니다. 실제 수치는 [성능 결과](performance.md)에 있습니다.

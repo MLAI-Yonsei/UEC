@@ -22,7 +22,7 @@ OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 \
   --output outputs/demo_fit
 ```
 
-실제 실험 명령은 README의 `prepare_alignment.py`, `run_alignment.py`입니다.
+실제 실험 명령은 README의 `prepare_alignment.py`, `tools/run_alignment.py`입니다.
 `example.py --input`은 별도 개발 예제용 입력을 사용하는 간단한 경로입니다.
 `--demo`는 프로그램이 자체 생성한 가짜 데이터를 쓰는 옵션입니다.
 

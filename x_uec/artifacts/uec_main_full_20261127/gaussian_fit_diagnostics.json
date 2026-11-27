@@ -1,0 +1,41 @@
+{
+  "qwen": {
+    "probes": 32,
+    "prior_precision": 1215.1299919092871,
+    "mean_data_precision_fraction": 0.0055538934126806196,
+    "variance_ratio_quantiles": [
+      0.0004315281098739357,
+      0.9944186183647504,
+      0.9998508195688978,
+      0.9999931655201084,
+      1.0
+    ],
+    "gaussian_formula_replay_passed": true
+  },
+  "harrier": {
+    "probes": 32,
+    "prior_precision": 674.1857349145029,
+    "mean_data_precision_fraction": 0.05818071050798364,
+    "variance_ratio_quantiles": [
+      1.4574800166231884e-05,
+      0.862367982124639,
+      0.9907270856321044,
+      0.9987115234534509,
+      0.9999999999711741
+    ],
+    "gaussian_formula_replay_passed": true
+  },
+  "gte": {
+    "probes": 64,
+    "prior_precision": 660.8642117343591,
+    "mean_data_precision_fraction": 4.018248071845485e-05,
+    "variance_ratio_quantiles": [
+      0.6437913810286279,
+      0.9999597186102,
+      0.9999948396622447,
+      0.999999194955387,
+      0.9999999988862848
+    ],
+    "gaussian_formula_replay_passed": true
+  }
+}

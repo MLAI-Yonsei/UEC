@@ -1,0 +1,490 @@
+{
+  "schema_version": 1,
+  "scope": "six-task exploratory pilot; fit-endpoint overlap filtered; not full MMTEB",
+  "status": {
+    "status": "completed",
+    "conditions": 11,
+    "internal_tasks": 2,
+    "external_tasks": 6,
+    "metrics": 88,
+    "wall_seconds": 92.75553464214318
+  },
+  "all_conditions_use_identical_cached_native_means": true,
+  "encoder_weights_updated": false,
+  "uec_uncertainty_score": false,
+  "mean_uniform_weights": [
+    0.3333333333333333,
+    0.3333333333333333,
+    0.3333333333333333
+  ],
+  "full_mmteb": false,
+  "posterior_unseen": false,
+  "external_primary_comparisons": {
+    "count": 36,
+    "all_exactly_unchanged": true,
+    "max_abs_delta_score100": 0.0,
+    "comparisons": [
+      {
+        "task": "SCIDOCS",
+        "model": "qwen",
+        "arm": "gpa",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "SCIDOCS",
+        "model": "qwen",
+        "arm": "caia",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "SCIDOCS",
+        "model": "harrier",
+        "arm": "gpa",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "SCIDOCS",
+        "model": "harrier",
+        "arm": "caia",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "SCIDOCS",
+        "model": "gte",
+        "arm": "gpa",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "SCIDOCS",
+        "model": "gte",
+        "arm": "caia",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "model": "qwen",
+        "arm": "gpa",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "model": "qwen",
+        "arm": "caia",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "model": "harrier",
+        "arm": "gpa",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "model": "harrier",
+        "arm": "caia",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "model": "gte",
+        "arm": "gpa",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "model": "gte",
+        "arm": "caia",
+        "primary_metric": "ndcg_at_10",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "model": "qwen",
+        "arm": "gpa",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "model": "qwen",
+        "arm": "caia",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "model": "harrier",
+        "arm": "gpa",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "model": "harrier",
+        "arm": "caia",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "model": "gte",
+        "arm": "gpa",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "model": "gte",
+        "arm": "caia",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "model": "qwen",
+        "arm": "gpa",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "model": "qwen",
+        "arm": "caia",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "model": "harrier",
+        "arm": "gpa",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "model": "harrier",
+        "arm": "caia",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "model": "gte",
+        "arm": "gpa",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "model": "gte",
+        "arm": "caia",
+        "primary_metric": "accuracy",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STSBenchmark",
+        "model": "qwen",
+        "arm": "gpa",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STSBenchmark",
+        "model": "qwen",
+        "arm": "caia",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STSBenchmark",
+        "model": "harrier",
+        "arm": "gpa",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STSBenchmark",
+        "model": "harrier",
+        "arm": "caia",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STSBenchmark",
+        "model": "gte",
+        "arm": "gpa",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STSBenchmark",
+        "model": "gte",
+        "arm": "caia",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STS22.v2",
+        "model": "qwen",
+        "arm": "gpa",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STS22.v2",
+        "model": "qwen",
+        "arm": "caia",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STS22.v2",
+        "model": "harrier",
+        "arm": "gpa",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STS22.v2",
+        "model": "harrier",
+        "arm": "caia",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STS22.v2",
+        "model": "gte",
+        "arm": "gpa",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      },
+      {
+        "task": "STS22.v2",
+        "model": "gte",
+        "arm": "caia",
+        "primary_metric": "spearman",
+        "delta_score100": 0.0
+      }
+    ]
+  },
+  "numerical_audit": {
+    "max_abs_cosine_error": 2.220446049250313e-15,
+    "max_abs_classification_transport_logit_error": 2.4424906541753444e-15,
+    "refitted_prediction_changes_vs_native": 0,
+    "transported_prediction_changes_vs_native": 0,
+    "tolerance": 1e-08
+  },
+  "external_exclusions": {
+    "SCIDOCS": {
+      "blocked_hash_count": 15367,
+      "roles": {
+        "corpus": {
+          "count_before": 25657,
+          "count_after": 25657,
+          "blocked_count": 0
+        },
+        "queries": {
+          "count_before": 1000,
+          "count_after": 1000,
+          "blocked_count": 0
+        }
+      },
+      "qrel_count_before": 29928,
+      "qrel_count_after": 29928
+    },
+    "LegalBenchCorporateLobbying": {
+      "blocked_hash_count": 15367,
+      "roles": {
+        "corpus": {
+          "count_before": 319,
+          "count_after": 319,
+          "blocked_count": 0
+        },
+        "queries": {
+          "count_before": 340,
+          "count_after": 340,
+          "blocked_count": 0
+        }
+      },
+      "qrel_count_before": 340,
+      "qrel_count_after": 340
+    },
+    "PoemSentimentClassification": {
+      "blocked_hash_count": 15367,
+      "roles": {
+        "support": {
+          "count_before": 245,
+          "count_after": 245,
+          "blocked_count": 0
+        },
+        "test": {
+          "count_before": 104,
+          "count_after": 104,
+          "blocked_count": 0
+        }
+      },
+      "support_trial_count_before": 10,
+      "support_trial_count_after": 10
+    },
+    "TweetTopicSingleClassification": {
+      "blocked_hash_count": 15367,
+      "roles": {
+        "support": {
+          "count_before": 346,
+          "count_after": 346,
+          "blocked_count": 0
+        },
+        "test": {
+          "count_before": 1693,
+          "count_after": 1693,
+          "blocked_count": 0
+        }
+      },
+      "support_trial_count_before": 10,
+      "support_trial_count_after": 10
+    },
+    "STSBenchmark": {
+      "blocked_hash_count": 15367,
+      "roles": {
+        "texts": {
+          "count_before": 2552,
+          "count_after": 2533,
+          "blocked_count": 19
+        }
+      },
+      "pair_count_before": 1379,
+      "pair_count_after": 1360,
+      "excluded_pair_count": 19
+    },
+    "STS22.v2": {
+      "blocked_hash_count": 15367,
+      "roles": {
+        "texts": {
+          "count_before": 392,
+          "count_after": 392,
+          "blocked_count": 0
+        }
+      },
+      "pair_count_before": 197,
+      "pair_count_after": 197,
+      "excluded_pair_count": 0
+    }
+  },
+  "uniform_caia_minus_gpa_score100": {
+    "SCIDOCS": 0.004320956165738465,
+    "LegalBenchCorporateLobbying": 0.10313856998904214,
+    "PoemSentimentClassification": -1.4210854715202004e-14,
+    "TweetTopicSingleClassification": 0.0,
+    "STSBenchmark": -0.0006724912042557207,
+    "STS22.v2": 0.003255458790519583
+  },
+  "internal": {
+    "ms_marco": {
+      "source": "ms_marco",
+      "queries": 158,
+      "corpus": 798,
+      "known_positive_relations": 158,
+      "dropped_queries_without_diagnostic_positive": 618,
+      "canonical_text_deduplicated": true,
+      "alignment_only_heldout": true,
+      "posterior_unseen": false,
+      "benchmark_claim": false,
+      "note": "Positive-pair matching among diagnostic candidates; SNLI entailment-only, not NLI classification or STS."
+    },
+    "snli": {
+      "source": "snli",
+      "queries": 159,
+      "corpus": 743,
+      "known_positive_relations": 159,
+      "dropped_queries_without_diagnostic_positive": 600,
+      "canonical_text_deduplicated": true,
+      "alignment_only_heldout": true,
+      "posterior_unseen": false,
+      "benchmark_claim": false,
+      "note": "Positive-pair matching among diagnostic candidates; SNLI entailment-only, not NLI classification or STS."
+    }
+  },
+  "runtime_comparability": {
+    "evaluation": "Certified original cached native means, normalized to float64 unit rows; original task prompts retained",
+    "qwen_evaluation": "flash_attention_2 and FP16 output normalization",
+    "qwen_fit": "sdpa and FP64 reconstructed final feature path",
+    "bit_identical_evaluation_vs_fit": false
+  },
+  "provenance": {
+    "verified_output_manifest_sha256": "e3d414e2064a7dbdc672eb27569762724d3a3d38611e4302470513550b4b885f",
+    "evaluation_provenance_sha256": "4121f851b6272248870ea99a9764e28869a6d5317de6dfdb3e07f1952b370e0d",
+    "compact_artifact_sha256": {
+      "metrics.csv": "a555b5b89492458237a916b19d42d8346648bbd906578fc09ec0b5345711583a",
+      "metrics.json": "b1b2b105b7d2817c5b55a8405b36f7e3e1dc3480231299c033eb908f03917932",
+      "status.json": "bc0c2309e1dd929af8ec8734b2b6f33af8d32ace775005a23ec1817ca213adaa"
+    },
+    "input_map_benchmark_sources_sha256": {
+      "inputs/manifest.json": "8046d412356e220c2010b35d225af7a79cf0611a3c3c81cecda5d766b14db68b",
+      "alignment/maps/gpa_maps.npz": "1a2b0e52a4d7f4247978b53ab18c263186a7bb03038bb4993ebf480074315e2a",
+      "alignment/maps/caia_maps.npz": "428f2497403efcbd2c2a3368d2d8ab20b92f13d4abf384454cfda69238d1e119",
+      "alignment/status.json": "252519e1d117490ae1fb96fe3affd042e30b723c42e2e5f5caf829a473ff2065",
+      "alignment/handoff_manifest.json": "f4fa0d3ecc7bf99b4c92d2adafd20713e336ccc7d8891e9641b0a591e26aa3ca",
+      "benchmarks/manifest.json": "1753dafb3814e347d883166c67909fe69b5ab8fa714b0d0c060c344098c7a434"
+    },
+    "evaluation_code_sha256": {
+      "tools/run_alignment.py": "d3644af60d6c76a5c81b5bb5106bff929f625eb51a8d3fa36d5ce4c7617fa183",
+      "tools/benchmark_inputs.py": "ab1e1791b94671069f5e2850e2c0d0610d366c2e1c26790ad969b2e7ea832bd7",
+      "tools/prepare_alignment.py": "578006520d19f70d91dc1be6e3a46ff4eefdb575321bb0a78d64aa9057b564bd",
+      "tools/performance_core.py": "8218ab2ec1cac5876241b155c9d5bce74c7bfe864db02d6908b5ef260caeeb62"
+    },
+    "producer_code_sha256": {
+      "covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
+      "run_alignment.py": "d2b66778c8a43a7e4d2052833122b5dcdc45b88f924454b947d3a5dbb7983a84",
+      "example.py": "7b00d47070de4f5494633339314ece03b931866a896ddd1c3189cd4dca67bd82",
+      "preparation_checks.py": "4b3c4ee6dc3e8212e5a786a35d82e3cd5573cdbc07609e7da64090ef274847a6",
+      "example_implicit.py": "f1450405679380930e145720e0f231834a4a49483fa0d85fc872b11ece04e466",
+      "prepare_alignment.py": "028674782bdadab8848cdf371cb7f5cd77ebc0fbad914eb771f8ba511edb70ff",
+      "caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
+      "standalone/storage.py": "4462ab5b658bb64fc46c0e6f14e48cdf9df32259bd31a29814608747868f2d78",
+      "standalone/alignment.py": "69784dedb73835dc41dfd51fa6f3cf9f04cad2667fe10345a4024b32b5b13898",
+      "standalone/assets.py": "aac7ed715112d67e738d006109174c04231afbb13ae7e9f48cde7faa519b2894",
+      "standalone/math_paths.py": "18b12706fe23fce72af009091c6afceb11316b7427a760bc5025cccd909cdbf9",
+      "standalone/math_qwen.py": "5c4f123b180837894920851399f48a830907c79aceddd46ec0f655f94862398b",
+      "standalone/math_gte.py": "5f6d091ec0c8636dd03630beb562a021fafa98677b02b596d2b64f740645d3c6",
+      "standalone/__init__.py": "2fb3924801c8defd9a1b4feefff23d4a1aaffb3c89c85cabcd82b1e262426d63",
+      "standalone/worker.py": "681bd294ecb882a771bf3e198c5209f391f4991b667f5a1eb4817c55a14a8a35",
+      "standalone/pipeline.py": "192ab2ce08641ff70cdebd800a017a60eaca4a434cbb3336e496a0871dad26aa",
+      "standalone/curvature.py": "1dd0548e52227db2016532ed8d479e01a1bfdb5abc8b1502e765a087e7f04865",
+      "standalone/records.py": "1601592cf3367e7fc17914c87e6594bc686b0fea9f32e1b7f74e525c692bf01c",
+      "standalone/models.py": "c8fbfbdc2d499f9decf847b1f1bf94a47f9726ec48c62a48a208cbea35fb575c",
+      "standalone/export.py": "2db8a95310c171b6c69c53f0df2c9339934fec81063ff9869c267095c60ed12c",
+      "reference_experiment/covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
+      "reference_experiment/prepare_cache.py": "73518ed951b1f7b7660e75e13677e778e7653fe7fc5e65ae42881160bfe15611",
+      "reference_experiment/example.py": "6cd0e78be14a7cde01f69bd1913ca7dba09cb17a7f8b1e8cd066f7bdd745b843",
+      "reference_experiment/export_ag_cache.py": "4f123cf3cc1282e483fd8f4a3a05875af7e5e0a8363a941272a99b0c3a1c53a0",
+      "reference_experiment/check_prepared.py": "7a0e1069a1612d5082a93c82908af68ac230a06dc14b270e34cb574b61b4eca5",
+      "reference_experiment/full_e4.py": "ff644fb42708afb196a4c17e2a982cf0af29e4868e8985032d0a49a92afe4a22",
+      "reference_experiment/full_audit.py": "451037523173ee0a2365a202f04dd44238fe5d953536031eb5955fa9c8f270e6",
+      "reference_experiment/run_e4_refit.py": "7ecde946344d0408b0b0f21b7344439296bfc9416d1f23965facf164c5c6f52f",
+      "reference_experiment/e4_data.py": "db88cf5a4695e27c8629d62c8a7461a8111e11a1148aad366f172da0b1e0b615",
+      "reference_experiment/e4_refit.py": "081c21722c043b1aee71739662d69f0ce47dda2307271b2778db6f208305c232",
+      "reference_experiment/run_covariance_validation.py": "3b64db51755d81f36da279a7f5b4eb34c45ec80ce2930a0b73781095544897a6",
+      "reference_experiment/caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d"
+    },
+    "benchmark_binding": {
+      "cache_index_sha256": "7349b3f3f125bb37a098d88d7ecc64f5d0b9476beb394ece2fbb6c805ddd380f",
+      "registry_sha256": "50ad0ce1862650719c94f8c1e046d4a7a86e46167760c23345ce2fad0f1940b5",
+      "fit_policy_sources": {
+        "/data2/claire/UEC/runs/x_uec_main_20261127_full01/models/qwen/gaussian/manifest.json": "e188e12b6e8895d517886ef88060198cd4df768f4ffd7dab75502d3be5ea58a7",
+        "/data2/claire/UEC/runs/x_uec_main_20261127_full01/models/harrier/gaussian/manifest.json": "34ad1c0d232c8c778ad6953904358cd0271f56607eb69187066034e5b0f4c343",
+        "/data2/claire/UEC/runs/x_uec_main_20261127_full01/models/gte/gaussian/manifest.json": "96f56a526721d56f90e6808200a44ac97ae8af18269ac3c21c24f76cc2b516dd"
+      }
+    }
+  }
+}

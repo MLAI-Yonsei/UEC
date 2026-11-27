@@ -1,0 +1,21 @@
+{
+  "reason": "initial 32-probe coordinate MC precision check failed",
+  "initial_probes": 32,
+  "actual_probes": 64,
+  "initial_audit": {
+    "passed": false,
+    "max_abs_z": 3.396758879998591,
+    "zero_se_count": 0,
+    "rule": "abs(estimate-exact) <= 3.29*SE + 1e-8*max(1,abs(exact))",
+    "max_abs_error": 0.0034348461311913235,
+    "max_tolerance": 0.009082933877941008
+  },
+  "acceptance_rule_unchanged": true,
+  "seed_unchanged": true,
+  "noise_and_coordinate_prefix_verified": true,
+  "initial_checkpoint_sha256": "ae811a91124292dd6d5dc661ae653d9b8bf8988966879939f9a63fe02ed647eb",
+  "initial_noise_manifest_sha256": "12b7ae147147f7796c8f96ea9fc5f3b356f6b27bddc11e0adca553ebbf022851",
+  "preparation_config_sha256": "1bc3508df5b2e2ccba69798a84784e5440ad9176115cb9e0a03d5c75fc583dd2",
+  "driver_sha256": "cb8b33532fe40b471841526aaa0a3ec9a2c94d81514e4e8d8b5b289dcebb7388",
+  "base_fitter_manifest_sha256": "fa6a301e3b77d4d4408bf580b0b3acc40aa84ffc3651d849cff9f7ddea607432"
+}

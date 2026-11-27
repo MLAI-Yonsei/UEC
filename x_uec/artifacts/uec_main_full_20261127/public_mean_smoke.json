@@ -1,0 +1,416 @@
+{
+  "qwen": {
+    "records": [
+      {
+        "task": "SCIDOCS",
+        "role": "corpus",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 8.125953470392022e-05,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "SCIDOCS",
+        "role": "queries",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 9.506380012296034e-05,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "role": "corpus",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 0.00013259806177269573,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "role": "queries",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 0.00010134239202001794,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "role": "support",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 0.00012141106544609481,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "role": "test",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 8.81763963236637e-05,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "role": "support",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 8.198867960092227e-05,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "role": "test",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 0.00011901063103873788,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "STSBenchmark",
+        "role": "texts",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 0.00011241385813481886,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "STS22.v2",
+        "role": "texts",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 9.696494377568754e-05,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      }
+    ],
+    "encoder_unchanged": true,
+    "policy": {
+      "model_id": "Qwen/Qwen3-Embedding-0.6B",
+      "revision": "b22da495047858cce924d27d76261e96be6febc0",
+      "tokenizer_revision": "b22da495047858cce924d27d76261e96be6febc0",
+      "native_dim": 1024,
+      "max_seq_length": 8192,
+      "prompt": "Instruct: Retrieve semantically similar text\nQuery:",
+      "actual_dtype": "torch.float16",
+      "actual_attention_backend": "sdpa",
+      "padding_side": "left",
+      "truncation_side": "right",
+      "pooling": "last_valid_token",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.51.3",
+        "sentence-transformers": "5.2.2",
+        "numpy": "2.3.5",
+        "huggingface-hub": "0.36.2",
+        "safetensors": "0.7.0",
+        "tokenizers": "0.21.4"
+      },
+      "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+    }
+  },
+  "harrier": {
+    "records": [
+      {
+        "task": "SCIDOCS",
+        "role": "corpus",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 3.289457777347349e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "SCIDOCS",
+        "role": "queries",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 2.6335240647934466e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "role": "corpus",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 2.2971908444913147e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "role": "queries",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 2.5873706586965195e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "role": "support",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.6287447529572674e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "role": "test",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.880473319768039e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "role": "support",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 2.3018284688036683e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "role": "test",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.98894011954609e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "STSBenchmark",
+        "role": "texts",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 3.561949818431387e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "STS22.v2",
+        "role": "texts",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 2.0872410744221526e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      }
+    ],
+    "encoder_unchanged": true,
+    "policy": {
+      "model_id": "microsoft/harrier-oss-v1-270m",
+      "revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+      "tokenizer_revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+      "native_dim": 640,
+      "max_seq_length": 32768,
+      "prompt": "Instruct: Retrieve semantically similar text\nQuery: ",
+      "actual_dtype": "torch.float32",
+      "actual_attention_backend": "sdpa",
+      "padding_side": "right",
+      "truncation_side": "right",
+      "pooling": "last_valid_token",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.51.3",
+        "sentence-transformers": "5.2.2",
+        "numpy": "2.3.5",
+        "huggingface-hub": "0.36.2",
+        "safetensors": "0.7.0",
+        "tokenizers": "0.21.4"
+      },
+      "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+    }
+  },
+  "gte": {
+    "records": [
+      {
+        "task": "SCIDOCS",
+        "role": "corpus",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.98604201417929e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "SCIDOCS",
+        "role": "queries",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 9.41884775729207e-09,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "role": "corpus",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 9.808899470442611e-09,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "LegalBenchCorporateLobbying",
+        "role": "queries",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.9562863801114716e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "role": "support",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.303783803141556e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "PoemSentimentClassification",
+        "role": "test",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.3380632490900268e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "role": "support",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.6439334282747353e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "TweetTopicSingleClassification",
+        "role": "test",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.8436053766945903e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "STSBenchmark",
+        "role": "texts",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.903703940320245e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      },
+      {
+        "task": "STS22.v2",
+        "role": "texts",
+        "rows": 1,
+        "audit": {
+          "max_encoder_center_abs_error": 1.2408010063857944e-08,
+          "center_checks": 1,
+          "path": "current reconstructed FP64 final path",
+          "variance_computed": false
+        }
+      }
+    ],
+    "encoder_unchanged": true,
+    "policy": {
+      "model_id": "thenlper/gte-base",
+      "revision": "c078288308d8dee004ab72c6191778064285ec0c",
+      "tokenizer_revision": "c078288308d8dee004ab72c6191778064285ec0c",
+      "native_dim": 768,
+      "max_seq_length": 512,
+      "prompt": "",
+      "actual_dtype": "torch.float32",
+      "actual_attention_backend": "sdpa",
+      "padding_side": "right",
+      "truncation_side": "right",
+      "pooling": "masked_mean",
+      "versions": {
+        "torch": "2.6.0+cu124",
+        "transformers": "4.51.3",
+        "sentence-transformers": "5.2.2",
+        "numpy": "2.3.5",
+        "huggingface-hub": "0.36.2",
+        "safetensors": "0.7.0",
+        "tokenizers": "0.21.4"
+      },
+      "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+    }
+  }
+}

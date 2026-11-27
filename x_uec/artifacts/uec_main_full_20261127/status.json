@@ -1,0 +1,23 @@
+{
+  "status": "alignment_ready_for_handoff",
+  "alignment_ready_for_handoff": true,
+  "covariance_guidance_active": true,
+  "wall_seconds": 285.9036720569711,
+  "input_validation_seconds": 11.005406332900748,
+  "delivery_version": "v3",
+  "mode": "full",
+  "encoder_weights_updated": false,
+  "inference_executed_in_this_run": false,
+  "posterior_refit_performed": false,
+  "alignment_refit_performed": true,
+  "alignment_only_heldout": true,
+  "posterior_unseen": false,
+  "uec_final_score_validated": false,
+  "uec_fusion_executed": false,
+  "downstream_evaluated": false,
+  "theorem_extension_proved": false,
+  "geometry_passed": true,
+  "moment_passed": true,
+  "diagonal_completed": true,
+  "diagnostic_coverage_passed": true
+}

@@ -1,0 +1,49 @@
+{
+  "model": "gte",
+  "policy": {
+    "model_id": "thenlper/gte-base",
+    "revision": "c078288308d8dee004ab72c6191778064285ec0c",
+    "tokenizer_revision": "c078288308d8dee004ab72c6191778064285ec0c",
+    "native_dim": 768,
+    "max_seq_length": 512,
+    "prompt": "",
+    "actual_dtype": "torch.float32",
+    "actual_attention_backend": "sdpa",
+    "padding_side": "right",
+    "truncation_side": "right",
+    "pooling": "masked_mean",
+    "versions": {
+      "torch": "2.6.0+cu124",
+      "transformers": "4.51.3",
+      "sentence-transformers": "5.2.2",
+      "numpy": "2.3.5",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.7.0",
+      "tokenizers": "0.21.4"
+    },
+    "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+  },
+  "encoder_hash_before": "740cf2a2a79b68b0fb32f2a65b03e29bab44f941291765fe261b267b0ab321e7",
+  "encoder_hash_after": "740cf2a2a79b68b0fb32f2a65b03e29bab44f941291765fe261b267b0ab321e7",
+  "asset_hashes": {
+    "config.json": "88bed05d7640945dd2de4b4e81fbe4dd962289c32fc1c0aacfd13deb7ea90155",
+    "sentence_bert_config.json": "948201d8329907aae938fa62f9ceeed53f5694dacc2b87b9f3b78b37ee986529",
+    "special_tokens_map.json": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+    "modules.json": "73348a3d8f8ae4cc5f851dc6b98be3ea819390b814e83656d5eebbadf75fe43e",
+    "tokenizer.json": "da0e79933b9ed51798a3ae27893d3c5fa4a201126cef75586296df9b4d2c62a0",
+    "tokenizer_config.json": "ae83fa6ca0333117ff12606020af925d648667ef70d92ff7f27d781ba0ca4544",
+    "vocab.txt": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+    "model.safetensors": "4a9e28bdb13c193da16ae4bdd6ba40ecceb5102b56bf8c1b039054290f644019",
+    "1_Pooling/config.json": "a37f83ada23e7887be6b88f4998927dbeac0038af301553c7cd5461413bf1a56"
+  },
+  "mean_variance_same_final_stage": true,
+  "native_output_dim": 768,
+  "observations": 15516,
+  "max_encoder_center_abs_error": 6.31010190765835e-08,
+  "seconds": 864.3921819820534,
+  "data_sha256": "94b191bcbe339a57a0b7121c141faffafbe3780f36712df588caf2e7b34f7b34",
+  "gaussian_manifest_sha256": "96f56a526721d56f90e6808200a44ac97ae8af18269ac3c21c24f76cc2b516dd",
+  "gaussian_fitted_in_preparation": true,
+  "uncertainty_source": "frozen_teacher_v3_fitted_in_preparation",
+  "profile": "full"
+}

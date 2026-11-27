@@ -1,0 +1,18 @@
+{
+  "metadata": {
+    "scope": "IDs, hashes, labels, protocols and model policies only; no raw text or embeddings",
+    "source_manifests": {
+      "SCIDOCS": "1e68ee078196f492d8121e08de03961302945df1bc49832cf3cffe338956e227",
+      "LegalBenchCorporateLobbying": "7143752a9242a327a2d0b482f33e78a05bcc72141f6091c6aab80b7ba8a0ed9b",
+      "PoemSentimentClassification": "3a34ded58327f7be7c519bede3f5d27392bb4a43efc7813ed11e7f2508755415",
+      "TweetTopicSingleClassification": "c55b59c9f27a57a2bfe46fd50fe2465e0621e680308d98c0eb15150f625447a0",
+      "STSBenchmark": "50bfa84ecd4b1589cc0af09810a7f6dd393f557b5fadfe9e7d273261c62fcb7e",
+      "STS22.v2": "02f240d2171f459063eb3320f102ff655aacf5e01acaa1f10aacf491a3073922"
+    },
+    "cache_index_sha256": "7349b3f3f125bb37a098d88d7ecc64f5d0b9476beb394ece2fbb6c805ddd380f"
+  },
+  "files": {
+    "protocol.json": "81a43d74586e7db7caf285ffd02c691b312c80ec3f93007387dd2b5f2527662a",
+    "row_ids.json.gz": "249d2347594763b0e96d3e60ee3fdf53ed90951f353008135a8cd956475ab6bf"
+  }
+}
