@@ -2,7 +2,7 @@
   "base_repository": "https://github.com/MLAI-Yonsei/UEC",
   "base_commit": "1235269c727832a5d17bb1cefba80ce125eb2912",
   "branch": "X-UEC",
-  "portable_tests_passed": 32,
+  "portable_tests_passed": 43,
   "reference_tests_passed": 69,
   "synthetic_fit_example": "passed",
   "implicit_dense_block_stream_examples": "passed",
@@ -12,7 +12,7 @@
   "original_uec_runtime": "unchanged",
   "review": {
     "important": "mixed-dtype integration documentation corrected and executed",
-    "deferred_minor": "Reproduction guide generates numeric-run config without the optional historical runtime verification sidecar fields; numerical replay requirements are documented, additional provenance replay detail remains optional."
+    "deferred_minor": "Resolved: historical runtime sidecar is validated and forwarded automatically."
   },
   "files_sha256": {
     "caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
@@ -25,7 +25,12 @@
     "requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
     "input_provenance.template.json": "2b15a220f355100def56c49ba2ef3191645c7fe6ac9c42e839908445b5ffec8f",
     "test_objective_contract.py": "774c8cc6fbf039601a3841ed54c0430e2c4c3e7cdba376f7a8ab6914b9d75fdd",
-    "README.md": "82f94e676e4180111718ff7d4c94a7c3f88f155647931ed889f336b963361edf",
+    "README.md": "16277019768eaa845e72300c57881447a8c7ea53597d2d72e8cddab67679a14e",
+    "test_preparation.py": "07ddfb7bdd45117f5fe5b49c7f73f221733e776d8cbb6da9f67660fb7e302fa1",
+    "prepare_alignment.py": "471c66d83267555a07460774ddb4e22230032de1263e9bf476efd6de37ba8478",
+    "run_alignment.py": "3ab71acc09cb6c638b64ddeec3e054e518d53a808acaad58df9ff29d335cb571",
+    "test_preparation_checks.py": "3701685d1ff3da215c925886637716ea6c25026b849325f3610bbb0c53d794c2",
+    "preparation_checks.py": "4b3c4ee6dc3e8212e5a786a35d82e3cd5573cdbc07609e7da64090ef274847a6",
     "reference_experiment/caia.py": "ddc81d148e6493ac262c0730135d9d4069677b62756325779351fc6b0189db3d",
     "reference_experiment/covariance_ops.py": "b5718f60224cdccf743de2e028525f1948198fcfdf7525816b4f75c5dbaf5c0c",
     "reference_experiment/e4_data.py": "db88cf5a4695e27c8629d62c8a7461a8111e11a1148aad366f172da0b1e0b615",
@@ -46,13 +51,15 @@
     "reference_experiment/test_full_audit.py": "d8518fbfea6c2f62551ed62645eba63e3faca940505038e3f167ac38c6015643",
     "reference_experiment/full_audit.py": "451037523173ee0a2365a202f04dd44238fe5d953536031eb5955fa9c8f270e6",
     "reference_experiment/requirements.txt": "105a25c9a24a53a42b52ccc93f930e1ea4a88b42372d440ae7c1b82c3a8b2c64",
-    "reference_experiment/README.md": "a13ccc78421406ce6f24f8892b62c11fda13bfb2169e6d77e434ef8fb518cee5",
+    "reference_experiment/README.md": "37a5fa0c44d456a00e15d0f8d3a86b298af5022a31552baa230c5a8b70950dbb",
+    "reference_experiment/prepare_cache.py": "73518ed951b1f7b7660e75e13677e778e7653fe7fc5e65ae42881160bfe15611",
+    "reference_experiment/check_prepared.py": "7a0e1069a1612d5082a93c82908af68ac230a06dc14b270e34cb574b61b4eca5",
     "docs/math.md": "767de81dc5570455557d8a8e74b677a7b945dbbf37f90546d6f035fcb9e82a4f",
-    "docs/data.md": "d166ae54397e0e2739374ac3ac5a1a251fb3409e7539e17072b4d58cd5134542",
-    "docs/integration.md": "ad46cf8e96f49d03a305f1f448204eb3273ee6bde7bfc36167db845c3d35230b",
-    "docs/results.md": "9d5e7187f06497cf0db23a52e158cc81ba3d533bc8cf55d7fc82e83195cb8892",
-    "docs/reproduction.md": "ed4fe2189addcc8565a8355a7a7a3995ab32bb80ffd0d43f01318a9dfb2b347f",
-    "docs/checks.md": "0a4b383b8b74c7885d77cde007d278008af5ae3d26515bd94c9da8008cb3043c",
+    "docs/data.md": "4f882ee7bcf1434125e8bcb51961da21d4cfaf4347e76ab9ac59d36f271e8097",
+    "docs/integration.md": "bddd3334b9f15b2a4f3e78775bef24571b68b4275ab172729171d3153eb655ae",
+    "docs/results.md": "1967c6f80012cc090738316c3c1f969ffb7cc27f4847e9078c28e7d758efe613",
+    "docs/reproduction.md": "65552108294d611594edda2c46f713db856b54fa54a1dde33969f096711becc9",
+    "docs/checks.md": "d2782d0936f75e8cfcd75bc9e10fe71a0b029bc4db6bc1dd4cd821aa04d4cf35",
     "artifacts/full_run_20261127/status.json": "c9f1c82dba66e5ac62fb7218c111bee391ce8e7933f4b521592171e380c2943a",
     "artifacts/full_run_20261127/solver_summary.json": "cea5b4012f7fe396743419ca8e881d6173e8dce21b4aaab31e4d3b62707c9c93",
     "artifacts/full_run_20261127/alignment_losses.csv": "5e9f3e36dcb6bf3f76aed02630fe76b2f6d774f32d7598cabbb7b392e6064722",
@@ -68,7 +75,7 @@
     "local_links": "passed",
     "renderer_cause": "GitHub parser reported Extra open brace for literal< and rejected operatorname; fenced math preserves backslashes"
   },
-  "input_documentation_update": {
+  "legacy_example_input_documentation": {
     "required_files": [
       "alignment_fit.npz",
       "alignment_fit_provenance.json"
@@ -76,5 +83,33 @@
     "npz_keys": "all12checked against existing loader",
     "original_selection_export": "upstream fit_la.py does not save selected rows; explicit documentation of missing preparation step",
     "runtime_code_changed": false
+  },
+  "existing_preparation_entry": {
+    "producer": "reference_experiment/prepare_cache.py adapted from actually executed prepare_caia_e4_v3_full_cache.py",
+    "original_workspace_required": true,
+    "fresh_clone_alone_sufficient": false,
+    "model_inference": "existing frozen-teacher v3 capture/native_forward/diagonal; fresh outputs when preparation runs",
+    "generated_files": [
+      "uec_alignment_inputs.npz",
+      "uec_input_provenance.json"
+    ],
+    "manual_template_required": false,
+    "actual_data_stage": "15516observations/0excluded verified",
+    "existing_full_input_check": "15516observations verified; historical runtime evidence forwarded",
+    "loaded_gte_runtime_policy": "actual CPU-loaded GTE settings matched sealed parent",
+    "new_full_gpu_inference_performed_in_this_update": false,
+    "numerical_core_changed": false
+  },
+  "preparation_review": {
+    "important_fixes": [
+      "bind payload paths and independently hashed producer summaries",
+      "validate/forward historical retrospective runtime source and environment metadata",
+      "compare loaded Qwen/Harrier policy and GTE runtime fields before output",
+      "restore off-home cache environment; select GPU by UUID with original memory guard",
+      "isolate preflight; result-adjacent config preserves historical/read-only inputs",
+      "inspect local+inherited package metadata without executing JSON-specified binaries"
+    ],
+    "regressions": "11preparation tests;43portable+69reference passed",
+    "deferred_minors": []
   }
 }

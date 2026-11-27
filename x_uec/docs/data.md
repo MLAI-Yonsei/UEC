@@ -1,157 +1,71 @@
-# 어떤 파일을 준비해야 하나요?
+# 입력 파일은 자동으로 만들어집니다
 
-[실행 안내](../README.md) · [정렬 후 계산 연결](integration.md)
+[실행 안내](../README.md) · [기존 실험 재현 조건](reproduction.md)
 
-현재 `example.py`가 정렬을 시작할 때 직접 읽는 파일은 **두 개**입니다.
-아래 이름은 실행 안내와 맞춘 권장 이름입니다. 파일명은 바꿀 수 있지만,
-명령의 `--input`, `--provenance` 경로도 같이 바꿔야 합니다.
+실제 실행은 `prepare_alignment.py` → `run_alignment.py` 순서입니다.
+`alignment_fit_provenance.json`을 손으로 작성하는 단계는 이 경로에 없습니다.
+기존 실행 코드가 사용한 **실제 파일 이름**은 다음과 같습니다.
 
-```text
-x_uec/
-└── local_data/
-    ├── alignment_fit.npz
-    └── alignment_fit_provenance.json
-```
+## 준비 전: 기존 실험 폴더에서 읽는 것
 
-이 파일들은 저장소에 완성된 실험 입력으로 포함되어 있지 않습니다.
-원래 UEC에서 사용한 실제 문장과 해당 모델의 출력으로 준비해야 합니다.
-
-## 1. alignment_fit.npz: 실제 평균·분산·문장 ID
-
-NPZ는 여러 숫자 배열을 이름을 붙여 한 파일에 담는 NumPy 형식입니다.
-이 파일 안에 **아래 12개 이름**으로 배열이 있어야 합니다. 이름의 `__`는 밑줄 두 개입니다.
-`N`은 별도 진단용 문장을 제외한, 이번 정렬에 사용할 문장 관측 수입니다.
-
-| 파일 안의 정확한 배열 이름 | 크기 | 들어갈 값 |
-|---|---|---|
-| `mean__qwen` | `(N, 1024)` | Qwen의 문장 임베딩 평균 |
-| `variance__qwen` | `(N, 1024)` | 같은 문장의 Qwen 출력 분산 |
-| `mean_ids__qwen` | `(N,)` | Qwen 평균을 계산한 문장의 ID |
-| `variance_ids__qwen` | `(N,)` | Qwen 분산을 계산한 문장의 ID |
-| `mean__harrier` | `(N, 640)` | Harrier의 문장 임베딩 평균 |
-| `variance__harrier` | `(N, 640)` | 같은 문장의 Harrier 출력 분산 |
-| `mean_ids__harrier` | `(N,)` | Harrier 평균을 계산한 문장의 ID |
-| `variance_ids__harrier` | `(N,)` | Harrier 분산을 계산한 문장의 ID |
-| `mean__gte` | `(N, 768)` | GTE의 문장 임베딩 평균 |
-| `variance__gte` | `(N, 768)` | 같은 문장의 GTE 출력 분산 |
-| `mean_ids__gte` | `(N,)` | GTE 평균을 계산한 문장의 ID |
-| `variance_ids__gte` | `(N,)` | GTE 분산을 계산한 문장의 ID |
-
-평균·분산은 float32 또는 float64의 유한한 숫자이고 분산은 비음수여야 합니다.
-평균은 이미 길이 1로 정규화한 출력이며 분산도 **그와 같은 출력 단계**의 값이어야 합니다.
-분산에 표준편차나 파라미터 분산을 넣지 않습니다. 정규화 전 단계의 분산을
-파일 이름만 바꿔 넣어서도 안 됩니다.
-
-현재 이 입력 프로그램은 다음 세 모델을 검사합니다.
-
-| 이름 | 모델 |
+| 기존 경로 | 쓰임 |
 |---|---|
-| `qwen` | `Qwen/Qwen3-Embedding-0.6B` |
-| `harrier` | `microsoft/harrier-oss-v1-270m` |
-| `gte` | `thenlper/gte-base` |
+| `runs/gte_la_validation_20261124/v1/data/triplets.jsonl` | 이미 선택한 MS MARCO/SNLI 쌍과 원문·원래 관계 |
+| 같은 폴더의 `selection.json`, `dataset_sources.json`, `manifest.json` | 선택 설정·데이터 버전·checksum |
+| `runs/caia_svd_frozen_triple_20261124/v3/gaussian/{모델}/` | 기존에 피팅한 모델별 Gaussian과 원래 모델 정책 |
+| 같은 v3 폴더의 `manifest.json`, `input_hashes.json` | 부모 실행의 데이터·모델·소스가 같은지 확인하는 기록 |
+| `runs/cross_predictive_partial_pilot6_20261119/data/` | 기존 평가6과제의 원문 중복 검사 |
 
-다른 모델의 배열을 위 이름으로 바꾸면 같은 모델이 되는 것은 아닙니다.
-모델 구성이 다르면 먼저 해당 모델에 맞는 코드·출력 계약을 정해야 합니다.
+원래 공개 UEC의 `fit_la.py`가 이 경로의 파일들을 자동으로 만든다는 뜻은 아닙니다.
+이들은 **이전에 AGNews 및 MS MARCO/SNLI 실험을 수행한 작업 폴더의 자산**입니다.
+그 작업 폴더를 재사용하는 실행 경로를 제공한 것입니다. 없으면 먼저 자산을 준비해야 합니다.
 
-### 한 행이 어떤 문장인지도 같아야 합니다
+## 준비 후: 새 출력 폴더에 생기는 것
 
-예를 들어 첫 행이 MS MARCO의 어느 query라면, 세 모델 모두 첫 행에 그 query의
-평균과 분산이 들어가야 합니다. 해당 query의 positive passage는 **다른 행**입니다.
-
-```text
-행0: ms_marco:123:query:0
-행1: ms_marco:123:positive_passage:0
-행2: snli:456:premise:0
-행3: snli:456:hypothesis:0
-...
-```
-
-위는 ID 형식의 예시이며 실제 데이터의 행 번호가 아닙니다. 각 ID 배열은
-비어 있지 않은 Unicode 문자열 배열입니다. 모든 모델의 평균·분산 ID가
-서로 같은 순서인지 검사합니다. 평균의 ID를 복사해서 분산의 실제 출처 확인을
-대신하지 않습니다.
-
-## 2. alignment_fit_provenance.json: 이 숫자가 어디서 나왔는지
-
-JSON은 텍스트로 읽을 수 있는 설명 파일입니다. 이미 제공한 양식을 복사해
-실제 정보로 채웁니다. 아래 명령은 파일을 복사할 뿐, 실제 정보를 자동으로 채우지 않습니다.
-
-```bash
-# x_uec/에서 실행
-mkdir -p local_data
-cp input_provenance.template.json local_data/alignment_fit_provenance.json
-```
-
-[`input_provenance.template.json`](../input_provenance.template.json)에 있는 항목의 뜻은 다음과 같습니다.
-
-| 항목 | 기록할 내용 |
+| 자동 생성 파일 | 내용 |
 |---|---|
-| `dataset` | 사용한 MS MARCO/SNLI의 버전·분할과 실제 선택 목록 설명 |
-| `split` | 이 파일에는 정렬용 관측만 있으므로 `alignment_fit` |
-| `selection_manifest_sha256` | 실제 선택 기록 파일 내용의 SHA-256 값 |
-| `models` | 세 모델의 정확한 이름, revision, 차원 |
-| `uncertainty_source` | 분산을 만든 기존 UEC 모델·posterior·설정·출처 |
-| `output_stage` | 실제 평균·분산이 최종 정규화 출력이면 `l2_normalized` |
-| `covariance_representation` | 현재 입력은 `native_output_diagonal_surrogate` |
-| `role_policy` | 모델별 query/passage 등의 역할, prompt, pooling, 길이 제한, dtype |
-| `alignment_diagnostic_separated` | 정렬용/진단용 문장을 실제로 분리했으면 `true` |
-| `evaluation_overlap_audit` | 어느 평가 원문과 중복을 검사했는지, 그 결과 |
+| `observations_all.jsonl` | 선택한 모든 문장과 실제 역할·원래 ID |
+| `observations.jsonl` | 중복 검사 후 사용하는 관측 |
+| `split.json` | 정렬용·진단용 문장 분할 |
+| `source_manifest.json` | 읽은 데이터와 부모 실행 출처 |
+| `{모델}/mean.npy`, `variance.npy` | 이번 문장에서 새로 계산한 평균·출력 분산 |
+| `{모델}/mean_ids.npy`, `variance_ids.npy` | 계산한 관측의 ID |
+| `{모델}/summary.json` | 모델 정책·원본 encoder hash·출력 checksum·계산 시간 |
+| `uec_alignment_inputs.npz` | 세 모델의 평균·분산·ID를 묶은 전체 입력 |
+| `uec_input_provenance.json` | 위 입력과 실제 계산 출처를 자동으로 묶은 JSON |
 
-SHA-256은 파일 내용이 같은지 확인하는 64자리 값입니다. 선택 기록이 예를 들어
-`selection_records.jsonl`이라면 `sha256sum selection_records.jsonl`로 구할 수 있습니다.
-프로그램은 JSON에 적힌 값의 형식을 검사합니다. 선택 기록 파일을 직접 열어
-문장 목록을 대조하는 것은 아니므로, 실제 기록을 함께 보관해야 합니다.
+`uec_input_provenance.json`은 사용자가 양식을 채우는 파일이 아닙니다.
+`reference_experiment/prepare_cache.py`가 모델별 계산을 마친 뒤 `assemble` 단계에서 만듭니다.
+현재 작업 경로의 관측 파일, 원래 source 파일, 모델 기록과 실제 출력 checksum에서 값을 읽습니다.
 
-양식의 `REPLACE_WITH_...`는 실제 값으로 교체해야 합니다. 중복 검사를 완료하기 전에
-`status=completed`, 정렬용/진단용을 분리하기 전에 `true`로 표시하지 않습니다.
+## NPZ 안의 배열 이름
 
-## 3. “기존 UEC의 선택 기록”은 어느 파일인가요?
+각 모델에는 아래 네 배열이 있습니다. `__`는 밑줄 두 개입니다.
 
-**원래 공개 UEC 코드에는 이 이름으로 저장되는 선택 기록 파일이 없습니다.**
-[`exp_mteb/fit_la.py`](../../exp_mteb/fit_la.py)는 MS MARCO/SNLI에서 일부를 뽑아
-사용하지만, 선택한 원문·원본 행 번호 목록을 별도 파일로 저장하지 않습니다.
-따라서 “선택 기록을 재사용한다”는 말은 **당시 그 목록을 따로 보관했다면 그것을
-쓴다**는 뜻입니다. 그런 파일이 이미 생겨 있다고 가정하면 안 됩니다.
+| 모델 | 평균 | 분산 | ID 두 개 |
+|---|---|---|---|
+| Qwen | `mean__qwen` | `variance__qwen` | `mean_ids__qwen`, `variance_ids__qwen` |
+| Harrier | `mean__harrier` | `variance__harrier` | `mean_ids__harrier`, `variance_ids__harrier` |
+| GTE | `mean__gte` | `variance__gte` | `mean_ids__gte`, `variance_ids__gte` |
 
-담당자가 보관한 원문 목록·인덱스·저장된 데이터가 있다면 그것을 기준으로 다음을 확인합니다.
-파일명은 정해져 있지 않으며, 여기서는 보관 이름의 예로 `selection_records.jsonl`을 사용합니다.
-이 파일은 `example.py`의 세 번째 입력이 아니라 **앞의 두 파일을 준비할 때 쓰는 근거**입니다.
+이 NPZ에는 정렬용과 진단용 관측이 모두 들어갑니다. `split.json`이 구분합니다.
+전체 runner는 그중 정렬용 관측만으로 γ와 행렬을 구하고 진단용 관측을 따로 사용합니다.
+이전 개발 예제 `example.py`는 정렬용 관측만 받는 다른 입력 경로이므로 두 형식을 섞지 않습니다.
 
-| 데이터 | 확인해야 하는 정보 |
-|---|---|
-| MS MARCO | 데이터 버전·split, 원본 행 번호, 실제 query, 선택한 positive passage와 원래 선택 관계 |
-| SNLI | 데이터 버전·split, 원본 행 번호, 실제 premise·hypothesis, 원래 label |
-| 공통 | 실제 선택 순서, 반복 관측, 기존 negative·정답·피팅 설정을 보존한 기록 |
+평균·분산의 열 개수는 Qwen1024/Harrier640/GTE768입니다. 모델 사이의 같은 행은
+같은 문장·같은 역할을 뜻합니다. query와 positive passage, premise와 hypothesis는 별도 관측입니다.
+정렬 입력은 같은 최종 출력 단계의 평균과 native 좌표별 분산이며, 파라미터 분산을 그대로 넣지 않습니다.
 
-이번 로컬 실험의 3,983/3,775쌍이라는 개수만 맞춰 새로 뽑으면 당시와 같은
-선택 기록이 되지 않습니다. 원래 목록이 없으면 당시 데이터 버전과 실행 설정에서
-선택을 재구성해 확인하거나, 새 선택을 사용한 실험으로 명확히 구분해야 합니다.
+## 실행 설정도 자동으로 만듭니다
 
-## 4. 기존 UEC의 la.pt가 있으면 바로 실행되나요?
+`run_alignment.py --inputs 준비폴더 --output 결과폴더`는
+`uec_input_provenance.json`과 독립된 모델별 계산 기록을 읽고,
+결과 폴더 옆에 `결과폴더명.config.json`을 자동 생성합니다. 입력 폴더는 수정하지 않습니다.
+사용자가 model revision이나 backend checksum을 다시 옮겨 적지 않습니다.
 
-원래 [`fit_la.py`](../../exp_mteb/fit_la.py)가 저장하는 기본 파일은 모델별로
-`la.pt`와 `la_posterior_variance.pt`입니다. `la.pt` 이름은 실행 옵션으로 바꿀 수 있습니다.
-이 파일들은 Laplace 모델과 파라미터 쪽 불확실성 자료이며, 위 NPZ의 문장별 평균·분산 파일과 다릅니다.
+준비 파일·원래 source·실행 코드가 계산 중 바뀌면 검증에서 거부합니다.
+준비 단계의 과거 `evaluation_scope` 기록 오류는 원본을 변경하지 않고
+full runner가 만드는 `verified_full_audit.json`에서 독립 재검사합니다.
 
-**현재 `example.py`는 이 PT 파일들을 직접 읽지 않습니다.** 원문 목록과 기존 UEC
-출력 계산 경로를 사용해 문장별 평균·분산을 만든 뒤, 12개 배열로 묶어야 합니다.
-원래 `exp_mteb/cache.py`의 MTEB 평가 캐시도 이 NPZ 형식으로 자동 변환되지 않습니다.
-새 posterior fitting을 하거나 AG News의 분산으로 채우는 단계가 아닙니다.
-
-이 문장별 출력 생성과 NPZ 내보내기를 한 번에 수행하는 범용 준비 명령은
-현재 브랜치에 연결되어 있지 않습니다. 이미 출력이 있는 경우에는 그것을 이용하고,
-없다면 사용하는 모델·UEC 출력 파일 형식에 맞는 준비 단계가 추가로 필요합니다.
-
-## 5. 정렬용과 진단용 문장을 먼저 나눕니다
-
-원문을 NFC와 CRLF/CR→LF만 적용한 hash로 그룹화합니다. 이 처리는 중복 확인용이며
-인코더에 넣는 원문을 바꾸지 않습니다. 선언한 평가 원문과 중복을 확인한 뒤,
-고유 그룹을 seed42로 약80/20 분리합니다. 같은 원문은 역할이 달라도 한쪽에만 둡니다.
-기존 원문 occurrence는 유지합니다.
-
-`alignment_fit.npz`에는 **정렬용 관측만** 넣습니다. 별도 진단 관측은 필요하면
-`alignment_diagnostic.npz`라는 이름으로 보관할 수 있지만, `example.py`는 이 파일을
-자동으로 읽거나 진단하지 않습니다. 진단 방법은 [연결 가이드](integration.md)에 있습니다.
-
-이번 로컬 실행은 총15,516개 관측에서 정렬용12,417개/진단용3,099개였고 평가 중복은0개였습니다.
-이 분리는 정렬에만 해당하며, 원래 UEC posterior가 해당 자료를 이미 보았다면 그 사실도 기록합니다.
+`input_provenance.template.json`은 작은 개발 예제용으로 남긴 양식이며,
+이 실제 준비·전체 정렬 흐름에서는 사용하지 않습니다.

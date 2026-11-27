@@ -29,7 +29,7 @@ from covariance_ops import (
 # map·평균·분산·coefficient 모두 같은 dtype으로 준비합니다.
 # solver가 저장한 float64 map을 float32 출력과 섞지 않습니다.
 dtype = np.float32
-with np.load("outputs/my_alignment/caia_maps.npz") as z:
+with np.load("/data2/claire/xuec_alignment_new/maps/caia_maps.npz") as z:
     maps = {m: z[m].astype(dtype) for m in ("qwen", "harrier", "gte")}
 overlap = build_overlap_blocks(maps)
 

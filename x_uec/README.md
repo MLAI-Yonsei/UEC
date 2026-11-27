@@ -1,91 +1,100 @@
-# X-UEC: CAIA 정렬과 공분산 계산
+# X-UEC: 기존 실험 코드로 MS MARCO/SNLI 정렬하기
 
-서로 다른 임베딩 모델의 출력을 공통 공간으로 옮기면서 **평균 위치와 불확실성 구조를 함께 맞추는** 코드입니다. 정렬에는 검증한 CAIA SVD v3를 사용합니다. 정렬 뒤에는 문장마다 큰 공분산 행렬을 저장하지 않고, native 분산 벡터와 공유 정렬 행렬로 필요한 계산을 수행합니다.
+이 브랜치는 **기존 AGNews 실험에서 사용한 평균·불확실성 계산과 CAIA SVD v3 정렬**을 연결합니다. 정렬할 문장만 MS MARCO/SNLI로 바꾸어 새 평균·분산을 계산합니다. 출처 JSON을 사용자가 손으로 작성할 필요는 없습니다.
 
-이 디렉터리는 기존 UEC의 데이터 선택, 정답, posterior, 가중치와 최종 점수 정의에 연결하는 정렬·계산 모듈입니다. 기존 `uec.py`와 평가 스크립트는 그대로 있습니다.
+기존에 피팅한 불확실성 모델은 재사용하고, 선택한 문장들의 평균·출력 분산과 정렬 행렬을 새로 계산합니다. 이 경로의 불확실성은 기존 frozen-teacher v3 근사입니다. 원래 UEC-LA를 새로 구현하거나 피팅하는 경로로 바꾼 것은 아닙니다.
 
-## 1. 설치
+## 1. 필요한 기존 실험 폴더
 
-Python 3.10 이상과 NumPy가 필요합니다. 이미 사용할 Python 환경에 NumPy가 설치되어 있다면 가상환경 생성·설치는 건너뛸 수 있습니다.
+전체 준비에는 **기존 실험 코드·모델·피팅된 불확실성 모델·선택한 원문**이 있는 작업 폴더가 필요합니다. 현재 실험 서버에서는 `/data2/claire/UEC`입니다. `--workspace`에 이 경로를 넣습니다.
+
+새 Git clone만으로 모델 추론까지 실행되는 것은 아닙니다. 다른 서버라면 기존 자산과 실행 환경도 있어야 합니다. 필요한 폴더 목록은 [기존 실험 재현 조건](docs/reproduction.md)에 적었습니다. 자산이 없으면 프로그램이 누락된 경로를 알려줍니다.
 
 ```bash
-git clone --branch X-UEC https://github.com/MLAI-Yonsei/UEC.git
-cd UEC
-
-# 충분한 공간이 있는 데이터 디스크에서 실행합니다.
-python -m venv .venv-xuec
-source .venv-xuec/bin/activate
-python -m pip install -r x_uec/requirements.txt
-cd x_uec
+git clone --branch X-UEC https://github.com/MLAI-Yonsei/UEC.git UEC-X-UEC
+cd UEC-X-UEC/x_uec
 ```
 
-설치 후에는 아래 **실제 데이터 정렬**로 진행합니다. 합성 데모나 단위 테스트를 먼저 실행해야 할 의존성은 없습니다.
+## 2. 선택 문장의 평균·분산과 입력 파일 만들기
 
-## 2. 먼저 준비할 파일
+기존 실험 폴더가 있는 서버에서 실행합니다. `--output`은 새 폴더, `--gpu`는 비어 있는 물리 GPU 번호입니다.
 
-현재 정렬 프로그램이 직접 읽는 파일은 **두 개**입니다. 아래는 `x_uec/` 안에 두는 권장 이름입니다.
+```bash
+python prepare_alignment.py \
+  --workspace /data2/claire/UEC \
+  --output /data2/claire/xuec_inputs_new \
+  --gpu 1
+```
+
+이 명령이 순서대로 하는 일은 다음과 같습니다.
+
+1. 기존 MS MARCO 3,983쌍/SNLI 3,775쌍을 읽어 문장 목록을 만들고, 중복 검사와 정렬용/진단용 분리를 수행합니다.
+2. Qwen → Harrier → GTE 순서로 **새 문장 평균·분산을 실제로 계산**합니다. 기존 AGNews 문장별 배열을 복사하지 않습니다.
+3. 결과를 `uec_alignment_inputs.npz`에 묶고 `uec_input_provenance.json`을 자동으로 만듭니다. 원문 선택, 역할, 모델 정책, 계산 출처와 checksum이 기록됩니다.
 
 ```text
-x_uec/
-└── local_data/
-    ├── alignment_fit.npz               # 정렬에 사용할 실제 평균·분산·문장 ID
-    └── alignment_fit_provenance.json   # 어느 데이터·모델·불확실성 계산에서 나온 값인지
+xuec_inputs_new/
+├── observations.jsonl             # 사용한 문장·역할·ID
+├── split.json                    # 정렬용/진단용 분리 기록
+├── source_manifest.json          # 원래 데이터 출처
+├── qwen/                        # 실제 계산한 평균·분산·ID·계산 기록
+├── harrier/
+├── gte/
+├── uec_alignment_inputs.npz       # 정렬 프로그램에 넣을 숫자 배열
+└── uec_input_provenance.json      # 자동 생성한 출처 기록
 ```
 
-이 파일들은 `git clone`으로 생기지 않습니다. 기존 UEC에서 계산한 실제 값으로 준비해야 합니다. 파일명은 바꿀 수 있지만, NPZ 안의 배열 이름은 코드가 정한 이름이어야 합니다. **[정확한 배열 이름과 파일별 내용](docs/data.md)**을 확인하세요.
+모델별로 원래 사용한 `.venv`/`.venv-reproduction` 환경을 사용합니다. 새로 모델을 다운로드하거나 encoder·불확실성 모델을 업데이트하지 않습니다. 기존과 같은 46,000MiB 이상 GPU를 검사하고 UUID로 고정합니다. GPU가 사용 중이면 기존 작업을 건드리지 않고 중단합니다. 출력 폴더는 덮어쓰지 않습니다.
 
-“기존 UEC의 선택 기록”은 당시 사용한 MS MARCO의 query–passage 목록과 SNLI의 premise–hypothesis 목록을 뜻합니다. 원래 `exp_mteb/fit_la.py`는 이 목록을 별도 파일로 저장하지 않습니다. 따라서 담당자가 당시 사용한 원문 목록·행 번호를 보관했는지 먼저 확인해야 합니다. 개수만 같게 다시 뽑아 같은 자료라고 부르지 않습니다.
-
-현재 `example.py`는 위 두 파일을 받아 정렬하는 프로그램입니다. **원문 목록이나 `la.pt`만 넣어서 평균·분산까지 자동 생성하는 준비 단계는 아직 연결되어 있지 않습니다.** 출력 평균·분산이 없다면 기존 UEC의 해당 계산 경로에서 먼저 만들어야 합니다.
-
-## 3. 준비한 파일로 실제 정렬 실행
-
-설치 단계 마지막의 `cd x_uec`까지 진행한 위치에서 실행합니다. 합성 데모를 먼저 실행할 필요는 없습니다.
+## 3. 만들어진 입력으로 GPA/CAIA 정렬·진단하기
 
 ```bash
-OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 \
-  python example.py \
-  --input local_data/alignment_fit.npz \
-  --provenance local_data/alignment_fit_provenance.json \
-  --r0-sweeps 100 --max-sweeps 300 \
-  --output outputs/my_alignment
+OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
+  python run_alignment.py \
+  --inputs /data2/claire/xuec_inputs_new \
+  --output /data2/claire/xuec_alignment_new
 ```
 
-- `--input`: 실제 평균·분산·ID 파일입니다.
-- `--provenance`: 그 값의 데이터·모델·계산 방법을 적은 JSON 파일입니다.
-- `--output`: 결과를 저장할 새 폴더입니다. 같은 이름의 폴더가 이미 있으면 새 이름을 사용합니다.
+`--inputs`에 **앞 단계의 폴더만 지정**합니다. 프로그램이 자동 생성된 출처 JSON에서 실행 설정을 만들고 전체 정렬·진단을 진행합니다. 별도의 JSON 양식을 채우지 않습니다.
 
-완료되면 `outputs/my_alignment/`에 `gpa_maps.npz`, `caia_maps.npz`, `fit_ids.npz`, `summary.json`이 생깁니다. 앞의 두 파일이 정렬 행렬입니다. `summary.json`에서 실제 종료 상태를 확인합니다.
+```text
+xuec_alignment_new/
+├── status.json                  # 수렴·검산을 포함한 최종 상태
+├── solver_summary.json          # GPA/CAIA 반복과 수렴 기록
+├── alignment_losses.csv         # 정렬용/진단용 손실 비교
+├── moment_equivalence.csv       # 작은 dense 기준과 계산 결과 비교
+├── diagonal_summary.csv         # 비대각 성분을 버렸을 때의 차이
+└── maps/                        # 수렴과 필수 검사를 통과한 경우
+    ├── gpa_maps.npz
+    └── caia_maps.npz
+```
 
-입력은 정렬용/진단용 문장을 미리 분리한 뒤 **정렬용 문장만** 포함해야 합니다. 이 명령은 원문 중복 검사와 분할을 자동 수행하지 않습니다. 생성한 행렬은 별도 문장에서 계산을 검산하기 전까지 후보 상태이며 `alignment_ready_for_handoff=false`입니다. 진단과 기존 UEC 점수 연결은 [연결 가이드](docs/integration.md)에 있습니다.
+미수렴 행렬은 `diagnostic_only/`에 보관하고 수치 실패에는 승인 행렬을 만들지 않습니다. `status.json`의 `alignment_ready_for_handoff`를 확인합니다. 이는 해당 출력 계약의 정렬·수치 검증이며 UEC 최종 점수나 검색·STS 성능 향상 검증은 아닙니다.
 
-## 4. 전체 데이터에서 확인한 결과
+이미 준비한 실제 전체 입력의 출처만 검사하려면 `run_alignment.py` 명령에 `--check-only`를 추가할 수 있습니다. 이 옵션은 모델 추론이나 정렬을 다시 실행하지 않습니다.
 
-기존 로컬 MS MARCO **3,983쌍**과 SNLI **3,775쌍**의 전체 **15,516개 관측**을 사용했습니다.
+## 4. 이미 전체 실행에서 확인한 값
 
 | 항목 | 실제 결과 |
 |---|---|
-| alignment-fit / diagnostic | 12,417 / 3,099개 관측 |
-| 평균 정렬 R0 / CAIA | 각각 18 / 232회에서 수렴 |
-| GPA 추가 반복 | 0회: 이미 수렴한 R0에서 시작 |
-| dense/implicit 수치 비교 | float64/float32 총 396개 통과 |
-| full 실행 상태 | `alignment_ready_for_handoff=true` |
+| 사용한 원문 | MS MARCO 3,983쌍 + SNLI 3,775쌍 |
+| 전체 문장 관측 | 15,516개 |
+| 정렬용 / 진단용 | 12,417 / 3,099개 |
+| R0 / CAIA 수렴 | 18 / 232회 |
+| GPA 추가 반복 | 이미 수렴한 R0에서 시작해 0회 |
+| float64/float32 계산 비교 | 396개 통과 |
 
-이 결과의 불확실성은 **기존 frozen-teacher v3 출력 근사**입니다. 수신자의 실제 UEC-LA posterior와 같은지, 검색·STS 성능이 좋아지는지는 별도 검증 범위입니다. 전체 결과와 원본 수치는 [실험 결과](docs/results.md)에서 확인할 수 있습니다.
+기존 전체 실행의 원본 수치와 범위는 [실험 결과](docs/results.md)에 있습니다. 새 준비 명령의 추가 검증과 과거 전체 실행의 결과를 구분해 기록합니다.
 
-## 5. 필요한 문서 찾기
+## 5. 필요한 문서
 
-| 문서·파일 | 설명 |
+| 문서 | 설명 |
 |---|---|
-| [docs/data.md](docs/data.md) | 모델·역할·배열·ID·출력 단계 계약 |
-| [docs/integration.md](docs/integration.md) | 큰 공분산 없는 계산과 UEC 연결·진단 절차 |
-| [docs/math.md](docs/math.md) | PDF 목적함수와 구현의 동치, 실제 SVD-MM 갱신식 |
-| [docs/results.md](docs/results.md) | 이번 전체 실행의 수렴·손실·수치 검산 |
-| [docs/reproduction.md](docs/reproduction.md) | 과거 전체 실험의 재현 조건 |
-| [docs/checks.md](docs/checks.md) | 개발자가 필요할 때 실행하는 선택적 검산 |
-| `caia.py` | 평균/공분산 정렬 및 SVD-MM |
-| `covariance_ops.py` | 비대각 공분산을 보존하는 raw 내적 모멘트 계산 |
-| `artifacts/full_run_20261127/` | 전체 실행의 수치 원본과 출처 checksum |
-| `reference_experiment/` | 전체 로컬 실행에 사용한 원래 runner와 회귀 테스트 |
+| [입력 파일](docs/data.md) | 자동으로 만들어지는 파일 이름과 내용 |
+| [기존 실험 재현 조건](docs/reproduction.md) | 기존 코드·모델·데이터·환경의 위치와 의존성 |
+| [수식](docs/math.md) | 목적함수와 실제 SVD-MM 구현의 관계 |
+| [UEC 연결](docs/integration.md) | 정렬 뒤 큰 공분산 없이 계산하고 최종 점수와 대조하는 방법 |
+| [실험 결과](docs/results.md) | 전체 실행에서 확인한 수렴·손실·검산 |
+| [개발자 점검](docs/checks.md) | 필요할 때만 실행하는 합성 예제·테스트 |
 
-모델·posterior·원문 데이터·대형 캐시·정렬 행렬 바이너리는 Git에 넣지 않았습니다. 자신의 출력 계약에 맞춰 새로 fitting하고, 문장별 분산과 모델별 공유 행렬을 함께 사용합니다.
+`example.py`, `example_implicit.py`, `input_provenance.template.json`은 별도 개발 예제입니다. 위 실제 실험 경로에서는 실행하거나 채울 필요가 없습니다. 기존 UEC의 원문·정답·negative 관계와 피팅 설정은 바꾸지 않습니다.
