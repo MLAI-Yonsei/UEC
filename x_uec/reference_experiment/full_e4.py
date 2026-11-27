@@ -31,7 +31,7 @@ def evaluate_alignment_losses(data,split,result):
     for label,indices in [('fit',split.fit_indices),('diagnostic',split.diagnostic_indices)]:
         x,v,ids=caia.check_anchor_inputs({m:a[indices] for m,a in data.means.items()},{m:a[indices] for m,a in data.variances.items()},
             {m:a[indices] for m,a in data.mean_ids.items()},{m:a[indices] for m,a in data.variance_ids.items()})
-        s=caia.compute_mean_stats(SimpleNamespace(x=x,ids=ids));k=caia.compute_cov_stats(SimpleNamespace(v=v,ids=ids,source='frozen_teacher_v3_reused'))
+        s=caia.compute_mean_stats(SimpleNamespace(x=x,ids=ids));k=caia.compute_cov_stats(SimpleNamespace(v=v,ids=ids,source=data.provenance.get('uncertainty_source','frozen_teacher_v3_reused')))
         for arm in ['r0','gpa','caia']:
             loss=caia.objective(result[arm]['maps'],s,k,gamma)
             for pair,values in [('all',loss),*loss['pairs'].items()]:
@@ -163,14 +163,25 @@ def run_full(config,output):
     def progress(phase):
         nonlocal stage
         stage=phase;write_json_atomic(output/'progress.json',dict(phase=phase,seconds=time.perf_counter()-start))
-    flags=dict(delivery_version='v3',mode='full',encoder_weights_updated=False,inference_executed_in_this_run=False,posterior_refit_performed=False,
+    flags=dict(delivery_version='v3',mode=config.get('mode','full') if config.get('input_profile')=='standalone_v1' else 'full',encoder_weights_updated=False,inference_executed_in_this_run=False,posterior_refit_performed=False,
         alignment_refit_performed=False,alignment_only_heldout=True,posterior_unseen=False,uec_final_score_validated=False,uec_fusion_executed=False,downstream_evaluated=False,theorem_extension_proved=False)
     write_json_atomic(output/'status.json',dict(status='running',**flags))
     try:
         code=snapshot_paths(Path(__file__).parent.glob('*.py'))
         write_json(output/'executed_code_before.json',code)
-        config=dict(config,mode='full');progress(stage);data=load_verified_inputs(config);split=make_full_split(data)
-        audit=audit_full_inputs(data);write_json(output/'verified_full_audit.json',audit)
+        standalone=config.get('input_profile')=='standalone_v1'
+        if standalone:
+            import sys
+            sys.path.append(str(Path(__file__).resolve().parents[1]))
+            from standalone.alignment import load_inputs,audit_and_split,profile_status
+            data=load_inputs(config);audit,split=audit_and_split(data)
+            flags['mode']=config['mode']
+            code.update(snapshot_paths((Path(__file__).resolve().parents[1]/'standalone').glob('*.py')))
+            write_json(output/'executed_code_before.json',code)
+        else:
+            config=dict(config,mode='full');data=load_verified_inputs(config);split=make_full_split(data)
+            audit=audit_full_inputs(data)
+        progress(stage);write_json(output/'verified_full_audit.json',audit)
         if config.get('runtime_verification_path'):
             file=Path(config['runtime_verification_path'])
             if sha(file)!=config['runtime_verification_sha256']:raise ValueError('runtime verification changed')
@@ -197,6 +208,7 @@ def run_full(config,output):
         diagnostics=dict(geometry_passed=geometry_ok,moment_passed=moment_ok,diagonal_completed=diagonal_ok,diagnostic_coverage_passed=coverage)
         if not coverage:diagnostics['moment_passed']=False
         state=readiness(result,diagnostics)
+        if standalone:state=profile_status(state,config['mode'])
         progress('rechecking_inputs_and_export')
         for file,expected in data.checksums.items():
             if sha(file)!=expected:raise ValueError('input changed during full run '+file)
@@ -211,11 +223,11 @@ def run_full(config,output):
             wall_seconds=time.perf_counter()-start,input_validation_seconds=input_seconds,**flags,**diagnostics)
         write_json(output/'handoff_manifest.json',dict(status,uncertainty_source=data.provenance['uncertainty_source'],gamma=result['gamma'],input_files=data.checksums,code_files=code,
             maps=maps,approved_maps=list(maps) if approved else [],actual_models={m:record['policy'] for m,record in data.provenance['models'].items()}))
-        lines=['# CAIA v3 full E4','',f'status: {state}',f'fit={len(split.fit_indices)}, diagnostic={len(split.diagnostic_indices)}, gamma={result["gamma"]:.12g}',
+        lines=[f'# CAIA v3 {flags["mode"]} E4','',f'status: {state}',f'fit={len(split.fit_indices)}, diagnostic={len(split.diagnostic_indices)}, gamma={result["gamma"]:.12g}',
             f'geometry={geometry_ok}, raw moment terms={len(moments)} all_pass={moment_ok}, diagonal controls={diagonal_ok}',
             '', '| arm | status | sweeps | seconds |','|---|---|---|---|']
         for arm in ['r0','gpa','caia']:lines.append(f'| {arm} | {result[arm]["status"]} | {result[arm]["sweeps"]} | {result[arm]["seconds"]:.6f} |')
-        lines+=['','Frozen teacher v3 surrogate reused. Original UEC-LA, downstream scores and theorem extension are not validated.',
+        lines+=['',f'Uncertainty source: {data.provenance["uncertainty_source"]}. Original UEC-LA, downstream scores and theorem extension are not validated.',
             'GPA covariance loss in alignment_losses.csv is recomputed with matched K and the same fit gamma; GPA trace cov=0 is not the covariance diagnostic.',
             'All plots/tables describe alignment/numerics, not retrieval or STS performance. Nonstationary maps remain diagnostic_only.','']
         (output/'report.md').write_text('\n'.join(lines))

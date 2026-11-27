@@ -1,0 +1,12 @@
+{
+  "ms_marco": 3983,
+  "snli": 3775,
+  "exact_ordered_text_match_to_main": true,
+  "observations": 15516,
+  "fit": 12414,
+  "diagnostic": 3102,
+  "excluded": 0,
+  "groups": 15367,
+  "selected_reference_sha256": "116fe2dc7909864902d37a389ede754d977dbbe742777394c841bcb47a2bc306",
+  "protocol_sha256": "6b368a78feee3e917ef39a032d54bb0a4b1f2abac121cbf2b5a785316bcafaa8"
+}

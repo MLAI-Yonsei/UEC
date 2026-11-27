@@ -1,0 +1,42 @@
+{
+  "method": "accepted v3 frozen-teacher SUM categorical GGN; no encoder update",
+  "prior_precision": 674.1857349145029,
+  "teacher_kl_per_observation": 6.45812486797322e-20,
+  "coordinate_audit": {
+    "passed": true,
+    "max_abs_z": 3.135028305019889,
+    "zero_se_count": 0,
+    "rule": "abs(estimate-exact) <= 3.29*SE + 1e-8*max(1,abs(exact))",
+    "max_abs_error": 42.457245682554344,
+    "max_tolerance": 114.93044273641857
+  },
+  "probes": 32,
+  "logical_batch": 512,
+  "physical_batch": 8,
+  "seed": 241301,
+  "parameter_gaussian_fitted_here": true,
+  "seconds": 115.83139838697389,
+  "policy": {
+    "model_id": "microsoft/harrier-oss-v1-270m",
+    "revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+    "tokenizer_revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+    "native_dim": 640,
+    "max_seq_length": 32768,
+    "prompt": "Instruct: Retrieve semantically similar text\nQuery: ",
+    "actual_dtype": "torch.float32",
+    "actual_attention_backend": "sdpa",
+    "padding_side": "right",
+    "truncation_side": "right",
+    "pooling": "last_valid_token",
+    "versions": {
+      "torch": "2.6.0+cu124",
+      "transformers": "4.51.3",
+      "sentence-transformers": "5.2.2",
+      "numpy": "2.3.5",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.7.0",
+      "tokenizers": "0.21.4"
+    },
+    "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+  }
+}

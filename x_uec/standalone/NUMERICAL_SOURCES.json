@@ -1,0 +1,22 @@
+{
+  "math_qwen.py": {
+    "original": "caia_pair_pilot/qwen_math.py",
+    "sha256": "5c4f123b180837894920851399f48a830907c79aceddd46ec0f655f94862398b",
+    "note": "accepted v3 pure numerical implementation; local path only as historical attribution"
+  },
+  "math_paths.py": {
+    "original": "caia_svd_pilot_v2/sensitivity_math.py",
+    "sha256": "18b12706fe23fce72af009091c6afceb11316b7427a760bc5025cccd909cdbf9",
+    "note": "accepted v3 pure numerical implementation; local path only as historical attribution"
+  },
+  "math_gte.py": {
+    "original": "gte_la/core.py",
+    "sha256": "6456e4c28e5a5ea299f4bfa283b5aae3806ebb390bb0362f99e03869f8119ceb",
+    "note": "accepted v3 pure numerical implementation; local path only as historical attribution",
+    "adaptation": "Added raw_vjp and coordinate_jacobian for fresh categorical GGN; independently checked against direct autograd. Other pure kernels copied."
+  },
+  "curvature.py": {
+    "coordinate_rule_source": "caia_svd_pilot_v2/uncertainty_checks.py:check_coordinate_ggn, also used by accepted v3",
+    "coordinate_rule": "abs(estimate-exact) <= 3.29*SE + 1e-8*max(1,abs(exact))"
+  }
+}

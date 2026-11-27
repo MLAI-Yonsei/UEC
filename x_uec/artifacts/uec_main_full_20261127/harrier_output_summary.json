@@ -1,0 +1,49 @@
+{
+  "model": "harrier",
+  "policy": {
+    "model_id": "microsoft/harrier-oss-v1-270m",
+    "revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+    "tokenizer_revision": "31de22b673913c7d658c0f03f792d77c2dcf8ebd",
+    "native_dim": 640,
+    "max_seq_length": 32768,
+    "prompt": "Instruct: Retrieve semantically similar text\nQuery: ",
+    "actual_dtype": "torch.float32",
+    "actual_attention_backend": "sdpa",
+    "padding_side": "right",
+    "truncation_side": "right",
+    "pooling": "last_valid_token",
+    "versions": {
+      "torch": "2.6.0+cu124",
+      "transformers": "4.51.3",
+      "sentence-transformers": "5.2.2",
+      "numpy": "2.3.5",
+      "huggingface-hub": "0.36.2",
+      "safetensors": "0.7.0",
+      "tokenizers": "0.21.4"
+    },
+    "final_output": "FP64 final-path mean and exact native diagonal after L2; source encoder comparison checked"
+  },
+  "encoder_hash_before": "e9a5d836be398cf0e93aca75d74257f2fc11f22af3805fee7f837c8b9ea982c1",
+  "encoder_hash_after": "e9a5d836be398cf0e93aca75d74257f2fc11f22af3805fee7f837c8b9ea982c1",
+  "asset_hashes": {
+    "modules.json": "84e40c8e006c9b1d6c122e02cba9b02458120b5fb0c87b746c41e0207cf642cf",
+    "config.json": "f77ed9972d4c5d69e58c4e1ee831d8e38bdbacfa358dfe0ce9a9d1885528976c",
+    "config_sentence_transformers.json": "ad2096929147368b5d0ba5322ea394d50911be4d348091c9f3b0ad06c3763d91",
+    "mteb_v2_eval_prompts.json": "08aaf10dc3d61ac54af15027d3a491ea06b2ed3edcb06dc05584539f5555fe51",
+    "special_tokens_map.json": "2f7b0adf4fb469770bb1490e3e35df87b1dc578246c5e7e6fc76ecf33213a397",
+    "tokenizer_config.json": "0227c7691ee78ae2e96b0cb7088a29caa74edb7be592d36d9479086b0bac403d",
+    "tokenizer.json": "6852f8d561078cc0cebe70ca03c5bfdd0d60a45f9d2e0e1e4cc05b68e9ec329e",
+    "model.safetensors": "90933b6826b61afd9331e0ebe3c0598b421a32eda5fb301a114fe36f306cb51a",
+    "1_Pooling/config.json": "8a7a9b2999b00da31538ae2c357182df15e23f8d77412bb97e727edf0ce495cc"
+  },
+  "mean_variance_same_final_stage": true,
+  "native_output_dim": 640,
+  "observations": 15516,
+  "max_encoder_center_abs_error": 2.221952863645793e-07,
+  "seconds": 73.70031782402657,
+  "data_sha256": "94b191bcbe339a57a0b7121c141faffafbe3780f36712df588caf2e7b34f7b34",
+  "gaussian_manifest_sha256": "34ad1c0d232c8c778ad6953904358cd0271f56607eb69187066034e5b0f4c343",
+  "gaussian_fitted_in_preparation": true,
+  "uncertainty_source": "frozen_teacher_v3_fitted_in_preparation",
+  "profile": "full"
+}

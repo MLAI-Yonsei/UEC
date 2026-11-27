@@ -1,0 +1,11 @@
+{
+  "reference": "UEC main default training selection reproduced exactly on pinned public datasets",
+  "pairs": 7758,
+  "evaluation_unique_hashes": 32646,
+  "files": {
+    "selection_ids.jsonl": "116fe2dc7909864902d37a389ede754d977dbbe742777394c841bcb47a2bc306",
+    "dataset_sources.json": "01775dff8599cb271fcd41335999e69945697990014ace3b51dd3e59fca3dc6f",
+    "evaluation_hashes.json": "4a097c73809338e3ba6079b140f7d4800b172536219056c4ef5b6fb39bf7dfb5",
+    "selection_protocol.json": "6b368a78feee3e917ef39a032d54bb0a4b1f2abac121cbf2b5a785316bcafaa8"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "ms_marco": {
+    "repo": "microsoft/ms_marco",
+    "revision": "a47ee7aae8d7d466ba15f9f0bfac3b3681087b3a",
+    "config": "v1.1",
+    "split": "train",
+    "sha256": "11d5e51d70ce87b47b1c132ef7c55f4cfb93b22c122058aa0591a65c4c0dc1f1",
+    "filename": "v1.1/train-00000-of-00001.parquet",
+    "size": 175452226
+  },
+  "snli": {
+    "repo": "stanfordnlp/snli",
+    "revision": "cdb5c3d5eed6ead6e5a341c8e56e669bb666725b",
+    "config": "plain_text",
+    "split": "train",
+    "sha256": "ef9a7b25d97390a62aeda7abe26aec8640600f50b818eaeb9107097d60ac6620",
+    "filename": "plain_text/train-00000-of-00001.parquet",
+    "size": 19614612
+  }
+}

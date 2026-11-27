@@ -1,0 +1,20 @@
+{
+  "status": "running",
+  "input_selection": "UEC main defaults, seed2025, MS5% then SNLI2%, sample before filter",
+  "selection_oracle": {
+    "ms_marco": 3983,
+    "snli": 3775,
+    "exact_ordered_text_match_to_main": true,
+    "observations": 15516,
+    "fit": 12414,
+    "diagnostic": 3102,
+    "excluded": 0,
+    "groups": 15367,
+    "selected_reference_sha256": "116fe2dc7909864902d37a389ede754d977dbbe742777394c841bcb47a2bc306",
+    "protocol_sha256": "6b368a78feee3e917ef39a032d54bb0a4b1f2abac121cbf2b5a785316bcafaa8"
+  },
+  "source_preparation": "fresh frozen-teacher SUM categorical GGN from pinned public models; not prefit Gaussian reuse",
+  "storage": "source copy outside original project; private project imports blocked; only standard public model/dataset caches shared",
+  "gamma_and_alignment_fitted_only_on_alignment_fit_partition": true,
+  "posterior_unseen": false
+}

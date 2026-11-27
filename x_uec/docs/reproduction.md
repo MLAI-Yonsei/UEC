@@ -1,105 +1,66 @@
-# 기존 AGNews 실험 코드에서 이어서 실행하기
+# 공개 자료에서 새로 계산하는 경로
 
-[실행 안내](../README.md) · [입력 파일](data.md) · [실험 결과](results.md)
+[실행 안내](../README.md) · [입력 파일](data.md)
 
-## 기존 코드에서 재사용하는 것
+기본 경로는 `prepare_alignment.py --work-dir ...`입니다. 필요한 계산 모듈, main 기본 선택의 재현 코드와 선택 기록은 이 브랜치에 포함했고, 공개 원문과 모델은 고정된 revision으로 다운로드합니다. 기존 `/data2/claire/UEC` 작업 폴더나 미리 피팅한 Gaussian은 필요하지 않습니다.
 
-이전 AGNews 실험과 MS MARCO/SNLI 전체 실행에서 사용한 native 평균·분산 계산 경로를 그대로 호출합니다. 새 불확실성 계산식을 구현하거나 원래 UEC-LA를 대신 구현한 경로가 아닙니다.
+## 모델과 환경
 
-| 단계 | 호출하는 기존 코드 |
+Python 3.11과 [requirements-full.txt](../requirements-full.txt)를 사용합니다. torch 2.6.0, transformers 4.51.3, sentence-transformers 5.2.2로 세 모델을 같은 환경에서 실행합니다. Linux CUDA GPU 한 장을 사용하며 현재 실행 전 검사는 총 메모리 46,000MiB 이상, 사용량 1,024MiB 이하, 사용 중인 계산 프로세스 없음입니다. 기존 프로세스를 종료하지 않습니다. FP64 미분·분산 계산이 포함되어 GPU 종류에 따라 시간이 크게 달라집니다.
+
+PyTorch 기본 설치가 서버 CUDA 드라이버와 맞지 않으면 [PyTorch 공식 설치 안내](https://pytorch.org/get-started/locally/)에 따라 **2.6.0에 맞는 CUDA wheel**을 같은 환경에 설치하세요. 다른 패키지를 임의 업그레이드하기보다 새 환경에서 고정 버전을 쓰는 것을 권장합니다.
+
+| 모델 | 고정 공개 revision | native 차원 | 최대 토큰 |
+|---|---|---|---|
+| Qwen/Qwen3-Embedding-0.6B | `b22da495047858cce924d27d76261e96be6febc0` | 1024 | 8192 |
+| microsoft/harrier-oss-v1-270m | `31de22b673913c7d658c0f03f792d77c2dcf8ebd` | 640 | 32768 |
+| thenlper/gte-base | `c078288308d8dee004ab72c6191778064285ec0c` | 768 | 512 |
+
+Qwen은 CUDA FP16, Harrier/GTE는 FP32로 encoder를 실행하고 최종 경로의 평균·미분·분산 계산은 FP64로 합니다. Qwen/Harrier는 기존 prompt와 마지막 유효 토큰, GTE는 masked mean pooling을 유지합니다. 실제 dtype, backend, padding, prompt, package version, checkpoint 해시는 출력에 기록합니다.
+
+기본 attention은 PyTorch `sdpa`입니다. 별도 FlashAttention 설치는 필요하지 않습니다. 이전 Qwen 실행의 FlashAttention과 bit 단위 재현을 주장하지 않습니다. 필요한 환경에서는 `--qwen-attention flash_attention_2`를 선택할 수 있지만 해당 패키지는 별도 설치해야 합니다.
+
+## 이전 계산에서 이어받은 부분
+
+| 부분 | 독립 실행의 코드 |
 |---|---|
-| 실제 선택·분할 | `reference_experiment/e4_data.py`의 `prepare_data(..., mode='full')` |
-| 모델별 문장 평균·출력 분산 | 기존 작업 폴더 `caia_svd_pilot_v3/uncertainty.py`의 `capture`, `native_forward`, `diagonal` |
-| 기존 피팅 Gaussian | 원래 v3 실행의 `gaussian/{qwen,harrier,gte}/` |
-| 배열·출처 JSON 조립 | `reference_experiment/e4_data.py`의 `assemble_cache` |
-| 전체 정렬·진단 | `reference_experiment/full_e4.py` |
+| Qwen 마지막 블록의 forward·미분·출력 분산 | `standalone/math_qwen.py` |
+| Harrier forward·미분·출력 분산, GTE 출력 분산 | `standalone/math_paths.py` |
+| GTE 마지막 LN/평균 풀링 경로와 shared-weight 미분 | `standalone/math_gte.py` |
+| 공개 모델 로딩·feature 추출 | `standalone/models.py` |
+| frozen-teacher categorical GGN과 Gaussian 피팅 | `standalone/curvature.py` |
+| 문장 평균·분산과 JSON 자동 내보내기 | `standalone/export.py` |
+| GPA/CAIA 정렬 | 기존 그대로인 `caia.py` |
+| 비대각 공분산을 보존하는 계산 | 기존 그대로인 `covariance_ops.py` |
 
-`prepare_alignment.py`는 위 단계들을 순서대로 실행하는 진입점입니다.
-새 `reference_experiment/prepare_cache.py`는 실제 사용했던 `prepare_caia_e4_v3_full_cache.py`에서 작업 폴더·import 위치를 인자로 받을 수 있게 연결한 파일입니다. 모델별 분산 계산식은 변경하지 않았습니다. 실제 실행 소스, 원본 모델·피팅 Gaussian의 hash와 runtime version을 검사합니다.
+이전 순수 수치 모듈의 출처와 SHA는 `standalone/NUMERICAL_SOURCES.json`에 기록했습니다. GTE의 새 역전파 계산은 같은 가중치가 모든 토큰에서 공유된다는 점을 유지하고 작은 직접 미분으로 검산합니다.
 
-## 필요한 외부 작업 폴더
+## 불확실성 피팅은 무엇을 하나요?
 
-공개 Git 저장소에는 아래 데이터·모델·환경을 포함하지 않았습니다. 현재 실험 서버의 원래 폴더는 `/data2/claire/UEC`입니다. 새 clone의 경로를 `--workspace`로 넣는 것이 아니라, **아래 기존 자산이 있는 폴더**를 지정합니다.
+Encoder를 학습하거나 이동시키지 않고 마지막 projection 가중치의 현재 값을 Gaussian 평균으로 고정합니다. 선택한 query와 positive의 raw 출력 내적에서 teacher 확률을 만들고, 그 확률을 고정한 categorical GGN 대각을 계산합니다. query와 positive가 공유하는 가중치에 대한 두 미분을 **먼저 더한 뒤 제곱**합니다. GTE의 토큰 사이 공유 효과도 유지합니다.
 
-```text
-기존실험폴더/
-├── .venv/bin/python
-├── .venv-reproduction/bin/python
-├── caia_svd_pilot_v3/
-├── caia_svd_pilot_v2/
-├── caia_pair_pilot/
-├── gte_la/
-├── uec_experiment/
-├── alignment_fma/
-├── gte_frozen_uncertainty/
-└── runs/
-    ├── gte_la_validation_20261124/v1/data/
-    ├── caia_svd_frozen_triple_20261124/v3/
-    │   ├── gaussian/{qwen,harrier,gte}/
-    │   ├── covariance/{qwen,harrier,gte}/summary.json
-    │   ├── manifest.json
-    │   └── input_hashes.json
-    ├── qwen_reproduction_20261110/author_protocol/reference/qwen_author_model.py
-    └── cross_predictive_partial_pilot6_20261119/data/
-```
+기본은 논리 배치 512, 곡률 probe 32, SUM 정규화입니다. 순서 seed는 2025, 모델별 probe seed는 코드에 고정되어 있습니다. 16개 가중치 좌표에서 직접 계산한 GGN과 비교하고 teacher 중심 KL도 확인합니다. prior precision은 고정 가중치 제곱 평균의 역수이며 teacher variance는 `1 / (prior_precision + GGN_diagonal)`입니다.
 
-작업 폴더의 부모 디렉터리에는 기존 `home-offload/storage-env.sh`도 필요합니다.
-그 파일의 `/data1`·`/data2` 캐시 설정을 다시 읽어, 현재 셸에 남은 `/home` 경로를 덮어씁니다.
+`--physical-batch`는 encoder 추론을 나누는 크기이며 기본 8입니다. 메모리를 줄이려면 이 값만 줄일 수 있습니다. 이는 logical batch 512를 바꾸지 않습니다. 한 logical batch의 feature만 CPU에 두고 GPU에는 작은 묶음으로 보냅니다. 저장된 문장 분산도 native 벡터이며 문장별 1024×1024 공분산을 생성하지 않습니다. 길이가 매우 긴 자료는 물리 배치를 더 줄여야 할 수 있습니다.
 
-이 코드가 참조하는 원래 source 의존성과 이미 저장한 Hugging Face checkpoint도 있어야 합니다. source와 데이터 경로는 원래 seal에 묶여 있습니다. 작업 폴더를 다른 서버로 단순 복사하면 원래 절대 경로와 seal까지 자동으로 이식되는 것은 아닙니다. 이 경로는 현재 기존 실험 작업 폴더에서 실제 실행 흐름을 재사용하는 용도입니다.
+이 경로는 이전 AGNews 실험의 frozen-teacher v3 계산을 공개 자료에서 다시 수행합니다. 원래 UEC-LA와 같은 posterior·최종 점수라고 확인한 것은 아닙니다. 불확실성 피팅에는 정렬 진단용 문장도 들어가므로 `posterior_unseen=false`로 기록합니다.
 
-새 clone만 있고 위 자산이 없다면 이 준비 명령을 그대로 실행할 수 없습니다. 그런 환경에서는 실제 모델·불확실성 모델·선택 자료를 어떤 형식으로 이전할지 별도 준비가 필요합니다. 없는 자산을 새 UEC posterior나 임의 선택으로 자동 대체하지 않습니다.
+## 재개와 파일 검증
 
-## 실제 실행 명령
+완료 단계는 상대 파일 경로와 SHA로 봉인합니다. 같은 명령을 다시 실행하면 설정·소스·완료 파일을 확인합니다. 진행 중 Gaussian은 원자적으로 기록한 마지막 완료 logical batch까지 이어서 계산하고, 완료 전 문장별 내보내기는 그 모델에서 다시 합니다. 설정·code·데이터·실제 tokenizer 파일·실행 라이브러리가 바뀌면 재사용을 거부하므로 새 작업 폴더가 필요합니다. 같은 작업 폴더에서 준비 명령 두 개를 동시에 실행하는 것도 거부합니다. 모델 전환 직후 사용률 표본만 남아 있으면 최대 5초 기다리며 실제 프로세스가 있으면 즉시 중단합니다. 정렬 결과도 새 `--output`을 사용합니다.
 
-새 clone의 `x_uec/`에서 실행합니다. 필요한 모델·불확실성 피팅 결과는 재사용하고, 선택한 문장들의 평균·분산은 새로 계산합니다.
+공개 모델·데이터 캐시는 네트워크 없이 다시 사용할 수 있습니다. `--cache-dir`는 표준 Hugging Face **hub 캐시 폴더**를 가리킵니다. 최초 다운로드와 재실행에서 같은 옵션을 사용하세요. `--offline`도 실행 설정의 일부이므로 바꾸려면 새 작업 폴더를 사용합니다.
 
-```bash
-python prepare_alignment.py \
-  --workspace /data2/claire/UEC \
-  --output /data2/claire/xuec_inputs_new \
-  --gpu 1
+## 수렴과 검증 범위
 
-OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 \
-  python run_alignment.py \
-  --inputs /data2/claire/xuec_inputs_new \
-  --output /data2/claire/xuec_alignment_new
-```
-
-`--gpu`는 비어 있는 물리 GPU 번호입니다. 세 모델은 같은 GPU를 순서대로 사용합니다. 기존 작업을 종료하거나 GPU를 강제로 비우지 않습니다. 새 출력 폴더를 사용하며, 이전 실패/완료 폴더를 덮어쓰지 않습니다.
-
-준비 중 새 encoder 추론과 출력 분산 계산이 있습니다. 기존 Gaussian을 다시 피팅하거나 encoder를 업데이트하지 않습니다. 이전 AGNews 문장별 분산과 정렬 행렬을 새 자료의 결과로 복사하지 않습니다.
-
-## 이미 준비한 입력의 연결 확인
-
-모델 추론이나 정렬을 다시 하지 않고, 준비된 전체 입력·선택·원본 출처와 자동 설정 생성을 확인할 수 있습니다.
-
-```bash
-python run_alignment.py \
-  --inputs /data2/claire/UEC/runs/caia_e4_v3/inputs_20261127_full_v1 \
-  --output /data2/claire/unused_check_result \
-  --check-only
-```
-
-성공 시 `prepared_inputs_verified`, 전체 관측 수와 자동 config 경로를 출력합니다.
-과거 입력에서 시작 시 runtime 기록이 없는 경우에는 원래 `runtime_policy_verification.json`을 검증해 전달합니다.
-이 기록은 후향 검증이며, 실행 전 정책 캡처로 표현하지 않습니다. `--check-only`는 새 평균·분산 계산이나 재정렬을 수행한 것으로 기록하지 않습니다. 생성 config는 `--output` 경로 옆의 `.config.json` 파일에 저장합니다. 기존 입력 폴더는 수정하지 않습니다.
-
-## 종료 상태
-
-| 상태 | 뜻 |
+| 상태 | 의미 |
 |---|---|
-| `stationary_tolerance` | 해당 solver가 residual/gap 기준을 만족 |
-| `budget_exhausted` | 반복 예산 종료; 수렴으로 표시하지 않음 |
-| `stalled_not_stationary` | loss 변화는 작지만 stationarity 기준 미달 |
-| `review_required` | 전체 진단 후에도 미수렴 결과 검토가 필요 |
-| `alignment_ready_for_handoff` | 해당 입력 계약에서 수렴 및 필수 진단 통과 |
-| `numerical_failure` | 입력·계산·진단 검증 실패; 승인 map 없음 |
+| `smoke_pass` | 실제 모델·소수 문장 경로와 필수 수치 진단 통과; 전달 승인 없음 |
+| `stationary_tolerance` | 개별 solver의 residual/gap 기준 만족 |
+| `review_required` | 전체 진단 후에도 solver 수렴 기준 미달 |
+| `alignment_ready_for_handoff` | 전체 profile에서 수렴과 필수 진단 통과 |
+| `numerical_failure` | 입력·계산·진단 실패; 승인 행렬 없음 |
 
-full runner는 통과한 map을 `maps/`, 수치적으로 유효하지만 미수렴한 map을 `diagnostic_only/`에 보관합니다. 최종 상태를 마지막에 기록하므로 계산 중간의 파일만 보고 성공으로 판단하지 않습니다.
+작은 점검은 정렬 3회, 전체는 R0 최대 100회 및 각 arm 최대 300회입니다. 검산은 동일한 `full_e4.py`에서 GPA/CAIA를 비교하고, float64/float32의 implicit/dense 동치성 396개 항목, 거리 보존과 대각 근사 차이를 확인합니다.
 
-## 검증 범위
-
-기존 전체 실행은 12,417개 정렬용/3,099개 진단용 관측으로 수행했고 원본 수치는 [`artifacts/full_run_20261127/`](../artifacts/full_run_20261127/)에 있습니다. 이번 진입점 추가 검증은 실제 원문 준비 단계와 기존 전체 입력의 출처 확인, 실행 순서·환경·자동 config 테스트입니다. 이 추가 검증을 새 GPU 전체 추론 결과라고 표현하지 않습니다.
-
-개발자의 합성 예제·단위 테스트는 [선택적 점검](checks.md)에 있습니다. `reference_experiment/`의 기존 회귀 테스트 69개도 모델 추론 없이 실행할 수 있습니다.
+기존 전체 실행의 수치는 [기존 결과](results.md)에 보관합니다. 그것은 이전 로컬 선택 자료와 이미 피팅한 Gaussian에서 시작한 실행이므로, main 기본 선택 자료에서 다시 실행한 결과와 구분합니다. 이번 독립 실행의 새 Gaussian에서 같은 γ·수렴 횟수가 나오리라고 가정하지 않습니다. 새 실행의 실제 결과는 해당 작업 폴더의 `status.json`과 `solver_summary.json`을 사용하세요. 독립 실행 점검 증거는 `VERIFICATION.json`에 별도로 기록합니다.

@@ -1,4 +1,4 @@
-"""Run the existing MS MARCO/SNLI full preparation in its original workspace."""
+"""Download public inputs and fit v3 uncertainty; no private workspace needed."""
 import argparse
 import json
 import os
@@ -16,16 +16,19 @@ def check_workspace(root):
     missing=[name for name in required if not (root/name).is_file()]
     if missing:raise FileNotFoundError('original experiment workspace required; missing: '+', '.join(missing))
 
-def check_gpu(gpu):
-    lines=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True).splitlines()
-    row=next((line for line in lines if int(line.split(',')[0])==gpu),None)
-    if row is None:raise ValueError('GPU index does not exist')
-    _,uuid,memory,total,util=[v.strip() for v in row.split(',')]
-    if int(total)<46000:raise RuntimeError('GPU memory below the original supported 46000 MiB profile')
-    apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True).splitlines()
-    if int(memory)>1024 or int(util)!=0 or any(a.split(',')[0].strip()==uuid for a in apps):
-        raise RuntimeError('GPU is busy; select an idle GPU and preserve existing jobs')
-    return uuid
+def check_gpu(gpu,*,settle_utilization=False):
+    import time
+    for attempt in range(6 if settle_utilization else 1):
+        lines=subprocess.check_output(['nvidia-smi','--query-gpu=index,uuid,memory.used,memory.total,utilization.gpu','--format=csv,noheader,nounits'],text=True).splitlines()
+        row=next((line for line in lines if int(line.split(',')[0])==gpu),None)
+        if row is None:raise ValueError('GPU index does not exist')
+        _,uuid,memory,total,util=[v.strip() for v in row.split(',')]
+        if int(total)<46000:raise RuntimeError('GPU memory below the original supported 46000 MiB profile')
+        apps=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True).splitlines()
+        if int(memory)>1024 or any(a.split(',')[0].strip()==uuid for a in apps):break
+        if int(util)==0:return uuid
+        if settle_utilization and attempt<5:time.sleep(1)
+    raise RuntimeError('GPU is busy; select an idle GPU and preserve existing jobs')
 
 def storage_environment(workspace):
     source=workspace.parent/'home-offload/storage-env.sh'
@@ -59,11 +62,27 @@ def prepare(workspace,output,*,gpu):
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--workspace',type=Path,required=True,help='Original AGNews/MS-MARCO-SNLI experiment workspace including sealed Gaussian, selection, sources and both environments')
-    p.add_argument('--output',type=Path,required=True,help='New input folder; NPZ and provenance are generated automatically')
+    group=p.add_mutually_exclusive_group(required=True)
+    group.add_argument('--work-dir',type=Path,help='Data disk directory for public downloads, new Gaussian and generated inputs')
+    group.add_argument('--workspace',type=Path,help='Legacy only: reuse the original archived experiment workspace')
+    p.add_argument('--output',type=Path,help='Legacy --workspace output only')
     p.add_argument('--gpu',type=int,required=True,help='Idle physical GPU index; models are processed sequentially')
+    p.add_argument('--profile',choices=['full','smoke'],default='full',help='full: 3983 MS MARCO + 3775 SNLI pairs; smoke: 32+32')
+    p.add_argument('--cache-dir',type=Path,help='Optional existing standard Hugging Face hub cache on a data disk')
+    p.add_argument('--offline',action='store_true',help='Use only already downloaded public assets in cache')
+    p.add_argument('--physical-batch',type=int,default=8,help='Encoder chunk size; logical curvature batch stays 512')
+    p.add_argument('--evaluation-texts',type=Path,action='append',default=[],help='Additional evaluation JSONL with text field; exclude matching texts')
+    p.add_argument('--qwen-attention',choices=['sdpa','flash_attention_2'],default='sdpa')
     a=p.parse_args()
-    try:print(prepare(a.workspace,a.output,gpu=a.gpu))
+    try:
+        if a.work_dir:
+            if a.output:p.error('--output is legacy only; standalone inputs are written under --work-dir/inputs')
+            from standalone.pipeline import prepare as standalone_prepare
+            print(standalone_prepare(a.work_dir,profile=a.profile,gpu=a.gpu,cache=a.cache_dir,offline=a.offline,
+                physical_batch=a.physical_batch,evaluation_texts=a.evaluation_texts,qwen_attention=a.qwen_attention))
+        else:
+            if a.output is None:p.error('--workspace requires --output')
+            print(prepare(a.workspace,a.output,gpu=a.gpu))
     except (ValueError,FileNotFoundError,FileExistsError,RuntimeError,subprocess.CalledProcessError) as e:p.exit(1,str(e)+'\n')
 
 if __name__=='__main__':main()

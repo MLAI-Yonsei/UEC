@@ -7,9 +7,9 @@
 - 실제 UEC 데이터 준비: [입력 데이터 계약](x_uec/docs/data.md)
 - 기존 UEC와 연결하기: [연결 가이드](x_uec/docs/integration.md)
 - 목적함수와 SVD 갱신식: [수식 설명](x_uec/docs/math.md)
-- 전체 MS MARCO/SNLI 실행: [실험 결과](x_uec/docs/results.md)
+- 전체 MS MARCO/SNLI 실행: [실험 결과](x_uec/docs/uec_main_results.md)
 
-`x_uec/`의 기본 예제는 NumPy만 필요합니다. 아래 기존 UEC 설치는 원래 모델·평가 경로를 실행할 때 사용합니다.
+공개 데이터 다운로드부터 새 불확실성 피팅·정렬까지 실행하려면 [X-UEC 설치·실행 안내](x_uec/README.md)를 따르세요. 기존 실험 폴더는 필요하지 않습니다. 아래는 원래 UEC의 설치·평가 안내입니다.
 
 ---
 

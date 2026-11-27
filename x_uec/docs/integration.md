@@ -14,7 +14,7 @@ GTE의 native 차원이 768, 공통 차원이 1024인 경우 문장마다 다음
 
 개념적인 정렬 공분산은 `R.T @ diag(v) @ R`입니다. `covariance_ops.py`는 필요한 계산을 이 분산 벡터와 공유 행렬로 수행합니다. **정렬 공분산의 대각만 남기는 방식이 아니며**, 회전으로 생긴 비대각 성분의 영향도 계산에 포함합니다.
 
-이 API는 native 대각 surrogate를 받습니다. native full covariance의 비대각을 버려도 같은 계산이라는 뜻은 아닙니다.
+이 계산 함수는 native 대각 근사를 받습니다. native full covariance의 비대각을 버려도 같은 계산이라는 뜻은 아닙니다.
 
 ## 모델별 native 출력을 함께 전달합니다
 
@@ -29,7 +29,7 @@ from covariance_ops import (
 # map·평균·분산·coefficient 모두 같은 dtype으로 준비합니다.
 # solver가 저장한 float64 map을 float32 출력과 섞지 않습니다.
 dtype = np.float32
-with np.load("/data2/claire/xuec_alignment_new/maps/caia_maps.npz") as z:
+with np.load("/data2/xuec-full/alignment/maps/caia_maps.npz") as z:
     maps = {m: z[m].astype(dtype) for m in ("qwen", "harrier", "gte")}
 overlap = build_overlap_blocks(maps)
 
